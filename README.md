@@ -1,2 +1,0 @@
-# findMaskApp
- react-native
