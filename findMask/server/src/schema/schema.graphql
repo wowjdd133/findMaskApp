@@ -1,0 +1,93 @@
+type User {
+  _id: ID!
+  name: String!
+  email: String!
+  gender: String!
+  phoneNumber: String!
+  password: String!
+  create_at: Date!
+  boards: [ID]
+}
+
+type Board {
+  _id: ID!
+  title: String!
+  content: String!
+  author: ID!
+  create_at: Date!
+  update_at: Date
+  comment: [ID]
+}
+
+type Comment {
+  _id: ID!
+  content: String!
+  author: ID!
+  board: ID!
+  create_at: Date!
+  update_at: Date
+  recomment: [ID]
+}
+
+type Recomment {
+  _id: ID!
+  content: String!
+  author: ID!
+  comment: ID!
+  create_at: Date!
+  update_at: Date
+}
+
+scalar Date
+
+type Query {
+  Users: [User]
+  Boards: [Board]
+  BoardById(_id: ID!):[Board]
+  Comments(_id: ID!): [Comment]
+  Recomments(_id: ID!): [Recomment]
+  User(_id: ID!): User
+  Board(_id: ID!): Board
+  
+}
+
+input UserInput {
+  name: String!
+  email: String!
+  gender: String!
+  phoneNumber: String!
+  password: String!
+}
+
+input BoardInput {
+  title: String!
+  content: String!
+  author: ID!
+}
+
+input CommentInput {
+  content: String!
+  author: String!
+  board: ID!
+}
+
+input RecommentInput {
+  content: String!
+  author: String!
+  comment: ID!
+}
+
+type Mutation {
+  createUser(input: UserInput): User
+  createBoard(input: BoardInput): Board
+  createComment(input: CommentInput): Comment
+  createRecomment(input: RecommentInput):Recomment
+  updateUser(_id: ID!, input: UserInput):User
+  updateBoard(_id: ID!, input: BoardInput):Board
+  updateComment(_id: ID!, input: CommentInput):Comment
+  updateRecomment(_id: ID!, input: RecommentInput):Recomment
+  deleteUser(_id: ID!):Boolean
+  deleteComment(_id: ID!):Boolean
+  deleteBoard(_id:ID!):Boolean
+  deleteRecomment(_id: ID!):Boolean
+}
