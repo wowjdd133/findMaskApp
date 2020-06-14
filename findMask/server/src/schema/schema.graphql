@@ -38,24 +38,35 @@ type Recomment {
   update_at: Date
 }
 
-scalar Date
-
-type Query {
-  Users: [User]
-  Boards: [Board]
-  BoardById(_id: ID!):[Board]
-  Comments(_id: ID!): [Comment]
-  Recomments(_id: ID!): [Recomment]
-  User(_id: ID!): User
-  Board(_id: ID!): Board
-  
+type Mask {
+  count: Int!
+  stores: [Store]
 }
+
+type Store {
+    addr: String!
+    code: String!
+    create_at: Date!
+    lat: Float!
+    lng: Float!
+    name: String!
+    remain_stat: String!
+    stock_at: Date!
+    type: String!
+}
+
+scalar Date
 
 input UserInput {
   name: String!
   email: String!
   gender: String!
   phoneNumber: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
   password: String!
 }
 
@@ -77,7 +88,25 @@ input RecommentInput {
   comment: ID!
 }
 
+input MaskInput {
+  lat: Float!
+  lon: Float!
+  m: Int!
+}
+
+type Query {
+  Masks(input:MaskInput): Mask
+  Users: [User]
+  Boards: [Board]
+  BoardById(_id: ID!):[Board]
+  Comments(_id: ID!): [Comment]
+  Recomments(_id: ID!): [Recomment]
+  User(_id: ID!): User
+  Board(_id: ID!): Board 
+}
+
 type Mutation {
+  login(input: LoginInput): User
   createUser(input: UserInput): User
   createBoard(input: BoardInput): Board
   createComment(input: CommentInput): Comment

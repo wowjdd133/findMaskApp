@@ -2,6 +2,8 @@ import User from './models/User';
 import Board from './models/Board';
 import Comment from './models/Comment';
 import Recomment from './models/Recomment';
+// import createJWT from './config/jwt';
+import axios from 'axios';
 
 type User = {
   input: {
@@ -11,6 +13,11 @@ type User = {
     phoneNumber: string,
     password: string,
   }
+}
+
+type UserInput = {
+  email: string,
+  password: string
 }
 
 type Board = {
@@ -42,8 +49,25 @@ type ID = {
   _id: string,
 }
 
+type Location = {
+  input: {
+    lat: number,
+    lon: number,
+    m: number,
+  }
+}
+
 const resolvers = {
   Query: {
+    async Masks(_:void,args:Location){
+      try{
+        const {data} = await axios.get(`https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json?lat=${args.input.lat}&lon=${args.input.lon}&m=${args.input.m}`);
+        console.log(data);
+        return data;
+      }catch(err){
+        console.error(err);
+      }
+    },
     async Users(_:void, args:void) {
       try{
         return await User.find();
@@ -95,6 +119,22 @@ const resolvers = {
     }
   },
   Mutation: {
+
+    async login(_:void, args:UserInput) {
+      try{
+        const user = await User.findOne(
+          {
+            email: args.email,
+            password: args.password
+          });
+        if(user){
+          return user;
+        }
+      }catch(err){
+        console.error(err);
+      }
+    },
+
     async createUser(_:void, args:User) {
       try{
         return await User.create(args.input);
