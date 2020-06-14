@@ -6,15 +6,15 @@ import cors from 'cors';
 import { createServer } from 'http';
 import mongoose from 'mongoose';
 import 'dotenv/config';
+// import {auth} from './middleware/auth';
 
 const corsOptions = {
   origin: 'http://localhost:3000',
   credentials: true,
 };
-
 mongoose.Promise = global.Promise;
 //env로 바꾸기.. 현재 dotenv를 써도 오류가 뜸.
-mongoose.connect("mongodb+srv://dbUser:mP4r9J81W4HeUVA9@cluster0-qmlot.mongodb.net/board?retryWrites=true&w=majority", { 
+mongoose.connect(process.env.MONGO_DB || "", { 
   useUnifiedTopology: true,
   useCreateIndex: true,
   useNewUrlParser: true,
@@ -28,6 +28,9 @@ const server = new ApolloServer({
 });
 
 app.use('*', cors(corsOptions));
+// app.use((req,res,next) => {
+//   auth(req,res,next);
+// })
 
 server.applyMiddleware({app, path:'/graphql'});
 
