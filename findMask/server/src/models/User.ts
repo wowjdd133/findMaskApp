@@ -33,7 +33,8 @@ const UserSchema = new Schema({
   boards: {
     type: [Schema.Types.ObjectId],
     ref:"Board"
-  }
+  },
+  token: String
 })
 
 UserSchema.plugin(uniqueValidator);
