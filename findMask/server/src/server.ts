@@ -9,7 +9,7 @@ import 'dotenv/config';
 // import {auth} from './middleware/auth';
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:19006',
   credentials: true,
 };
 mongoose.Promise = global.Promise;
