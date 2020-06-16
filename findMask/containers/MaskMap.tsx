@@ -1,18 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, memo} from 'react';
 import * as Location from 'expo-location';
 import {Alert} from 'react-native';
-import MapContent from '../components/Map';
+import MapContent from '../components/MaskMap';
 import Loading from '../components/Loading';
 import {StyleSheet,View} from 'react-native';
 
 export interface LocationType {
-  coords?: {
+  coords: {
     latitude: number,
     longitude: number,
   }
 }
 
-const Map = () => {
+const MaskMap = () => {
 
   const [location, setLocation] = useState<LocationType>({
     coords: {
@@ -20,12 +20,13 @@ const Map = () => {
       longitude: 128.5471027,
     }
   });
+  const [loading, setLoading] = useState<Boolean>(true);
 
   useEffect(() => {
     (async () => {
       try{
+        setLoading(true);
         let { status } = await Location.requestPermissionsAsync();
-        console.log('status',status);
         if (status !== 'granted'){
           throw new Error; 
         }
@@ -37,14 +38,13 @@ const Map = () => {
           }
         } = await Location.getCurrentPositionAsync({});
 
-        console.log(latitude,longitude);
-
         setLocation({
           coords: {
             latitude,
             longitude
           }
         });
+        setLoading(false);
       } catch(err){
         Alert.alert("실패","다시 시도하시겠습니까?",[{
           text: "예",
@@ -54,6 +54,13 @@ const Map = () => {
           text: "아니오",
           onPress: () => {
             console.log('return');
+            setLocation({
+              coords: {
+                latitude: 35.9349066,
+                longitude: 128.5471027,
+              }
+            })
+            setLoading(false);
           }
         }
       ])
@@ -61,9 +68,11 @@ const Map = () => {
     })();
   },[]);
 
+  console.log('maskMapContainer');
+
   return (
     <View style={styles.container}>
-      {location === null ? <Loading/> :<MapContent coords={location.coords}/>}
+      {loading ? <Loading/> :<MapContent coords={location.coords}/>}
     </View>
     )
 };
@@ -75,4 +84,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Map;
+export default memo(MaskMap);
