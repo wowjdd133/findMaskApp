@@ -1,13 +1,14 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import {StyleSheet, Text, Dimensions, Alert, Linking} from 'react-native'
-import {LocationType} from '../containers/Map';
+import {StyleSheet, Text, Dimensions, Alert, Linking, Button} from 'react-native'
+import {LocationType} from '../containers/MaskMap';
 // import MarkerList from './MarkerList';
 import { useQuery } from '@apollo/react-hooks'
 import Loading from './Loading';
 import { FlatList,View,SafeAreaView } from 'react-native';
 import MapView,{Marker, Callout} from 'react-native-maps';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import {useNavigation } from '@react-navigation/native';
+import { MARKER_COLOR, REMAIN_STAT, LATITUDE_DELTA } from '../constants/MaskData';
 
 const GET_MASK_DATA = gql`
   query getMasks($input:MaskInput!){
@@ -19,7 +20,8 @@ const GET_MASK_DATA = gql`
         name,
         lat,
         lng,
-        remain_stat
+        remain_stat,
+        stock_at
       }
     }
   }
@@ -39,6 +41,7 @@ interface Stores {
   lng: number,
   code: string,
   remain_stat: string,
+  stock_at: string
 }
 interface MaskData {
   Masks:{
@@ -47,7 +50,13 @@ interface MaskData {
   }
 }
 
-const Map = (props:LocationType) => {
+//Text 컬러를 styled-components 적용해서 바꿔보자.
+const MaskMap = (props:LocationType) => {
+
+  const navigation = useNavigation();
+
+  console.log('maskMapComponent');
+
     if(props.coords){
       const { data, loading, error} = useQuery<MaskData, MaskInput>(GET_MASK_DATA, {
         variables: {
@@ -69,24 +78,10 @@ const Map = (props:LocationType) => {
   
       if(data){
         const { height, width } = Dimensions.get("window");
-        const LATITUDE_DELTA = 0.01501;
         const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
-        const MARKER_COLOR = {
-          plenty: "#40E0D0",
-          few: "#7CFC00",
-          some: "#FFA500",
-          empty: "#ff0000",
-          break: "#808080",
-        };
-        const REMAIN_STAT = {
-          plenty: "30개 이상 100개 이하",
-          few: "10개 이상 29개 이하",
-          some: "2개 이상 9개 이하",
-          empty: "0~1개",
-          break: "판매 중지",
-        }
-  
+
         return (
+          <SafeAreaView style={styles.container}>
               <MapView
                 style={styles.mapStyle}
                 initialRegion={{
@@ -127,8 +122,24 @@ const Map = (props:LocationType) => {
                     )
                   })}
               </MapView>
-        )
-    }
+            <View style={styles.showOnView}>
+                <Button
+                  onPress={() => {
+                    navigation.navigate("List",{
+                      data,
+                      location: {
+                        lat: props.coords.latitude,
+                        lng: props.coords.longitude,
+                      }
+                    });
+                  }}
+                  title="이건 되겠지"
+                />
+
+              </View>
+            </SafeAreaView>
+          )
+      }
     }
     
   return <Text>hi</Text>
@@ -136,21 +147,21 @@ const Map = (props:LocationType) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#ccc',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1
+  },
+  showOnView: {
+    position: "absolute",
+    top: '50%',
+    alignSelf: 'flex-end'
   },
   mapStyle: {
     flex: 1,
-    justifyContent: 'center'
   },
   callout:{
-    flex: 1,
     alignItems: 'center'
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     textAlign: "center"
   },
@@ -160,4 +171,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Map;
+export default MaskMap;
