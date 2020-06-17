@@ -12,7 +12,7 @@ export interface LocationType {
   }
 }
 
-const MaskMap = () => {
+const MaskLocation = () => {
 
   const [location, setLocation] = useState<LocationType>({
     coords: {
@@ -66,6 +66,10 @@ const MaskMap = () => {
       ])
       }
     })();
+    return(() => {
+      setLocation({});
+      setLoading(false);
+    })
   },[]);
 
   console.log('maskMapContainer');
@@ -84,4 +88,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default memo(MaskMap);
+export default memo(MaskLocation);
