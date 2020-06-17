@@ -1,7 +1,7 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import {StyleSheet, Text, Dimensions, Alert, Linking, Button} from 'react-native'
-import {LocationType} from '../containers/MaskMap';
+import {LocationType} from '../containers/MaskLocation';
 // import MarkerList from './MarkerList';
 import { useQuery } from '@apollo/react-hooks'
 import Loading from './Loading';
@@ -34,7 +34,7 @@ interface MaskInput {
     m: number,
   }
 };
-interface Stores {
+export interface Stores {
   name: string,
   addr: string,
   lat: number,
@@ -43,7 +43,7 @@ interface Stores {
   remain_stat: string,
   stock_at: string
 }
-interface MaskData {
+export interface MaskData {
   Masks:{
     count: number,
     stores: [Stores]
@@ -63,7 +63,7 @@ const MaskMap = (props:LocationType) => {
           input:{
             lat: props.coords.latitude,
             lon: props.coords.longitude,
-            m: 1000
+            m: 1500
           }
         }
       });
@@ -126,14 +126,16 @@ const MaskMap = (props:LocationType) => {
                 <Button
                   onPress={() => {
                     navigation.navigate("List",{
-                      data,
-                      location: {
-                        lat: props.coords.latitude,
-                        lng: props.coords.longitude,
+                      data:{
+                        data,
+                        location: {
+                          lat: props.coords.latitude,
+                          lng: props.coords.longitude,
+                        }
                       }
                     });
                   }}
-                  title="이건 되겠지"
+                  title="리스트"
                 />
 
               </View>
@@ -151,7 +153,7 @@ const styles = StyleSheet.create({
   },
   showOnView: {
     position: "absolute",
-    top: '50%',
+    bottom: "0%",
     alignSelf: 'flex-end'
   },
   mapStyle: {
