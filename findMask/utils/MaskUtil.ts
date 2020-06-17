@@ -1,13 +1,18 @@
+import moment from 'moment';
+import 'moment-timezone';
+
+moment.tz.setDefault("Asia/Seoul");
 
 export const getElaspedTime = (time:string) => {
-  const now = new Date();
-  const timeValue = new Date(
-    (time || "").replace(/-/g, "/").replace(/[TZ]/g, " ").split(".")[0]
+  
+  let now = moment()
+  
+  const timeValue = moment(
+    (time || "").replace(/-/g, "/").replace(/[TZ]/g, " ").split(".")[0], "YYYY/MM/DD HH:mm:ss"
   );
   const min = 60;
   //date.getTime() -> msec. so /1000
-  let elaspedTime;
-  elaspedTime = (now.getTime() - timeValue.getTime()) / 1000;
+  let elaspedTime = now.diff(timeValue, 'seconds');
 
   let result = "알 수 없음";
 
