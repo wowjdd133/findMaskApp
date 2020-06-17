@@ -61,15 +61,26 @@ const resolvers = {
   Query: {
     async Masks(_:void,args:Location){
       try{
-        const {data} = await axios.get(`https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json?lat=${args.input.lat}&lon=${args.input.lon}&m=${args.input.m}`);
-        console.log(data);
+        const {data} = await axios.get(`https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json?lat=${args.input.lat}&lng=${args.input.lon}&m=${args.input.m}`);
+
         return data;
       }catch(err){
         console.error(err);
       }
     },
+    async CoronaKorea(_:void, args:void){
+      try{
+        const {data} = await axios.get('http://api.corona-19.kr/korea');
+
+        console.log(data);
+        return data;
+      } catch(err){
+        console.error(err);
+      }
+    },
     async Users(_:void, args:void) {
       try{
+        console.log(args);
         return await User.find();
       } catch(err){
         console.error(err);
