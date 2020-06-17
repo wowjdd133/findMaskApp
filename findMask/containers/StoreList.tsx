@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View,FlatList, SafeAreaView, TouchableOpacity} from 'react-native';
-import { useRoute } from '@react-navigation/native'
-import { MARKER_COLOR, REMAIN_STAT} from '../constants/MaskData';
+import {Text, View,FlatList, SafeAreaView} from 'react-native';
+import { useRoute,RouteProp } from '@react-navigation/native'
 import { getDistanceFromLatLon, getElaspedTime} from '../utils/MaskUtil';
-import SearchBar from './SearchBar';
-import SearchItem from './SearchItem';
+import SearchBar from '../components/SearchBar';
+import SearchItem from '../components/SearchItem';
+import {Stores, MaskData} from '../components/MaskMap';
+import Loading from '../components/Loading';
 
 interface StoreListProps {
   count: number;
@@ -28,14 +29,27 @@ interface Location {
   lng: number,
 }
 
+type RouteStackParamList = {
+  data: {
+    data: {
+      data:MaskData;
+      location: Location;
+    }
+  }
+}
+
+type StoreListRouteProps = RouteProp<RouteStackParamList, 'data'>
+
 const StoreList = () => {
+  
+  console.log('StoreList');
 
   const [value, setValue] = useState('');
   const [datas, setDatas] = useState<StoreListProps>();
   
-  const Route = useRoute();
-  const data:StoreListProps = Route.params.data.Masks;
-  const location:Location = Route.params.location;
+  const Route = useRoute<StoreListRouteProps>();
+  const data:StoreListProps = Route.params.data.data.Masks;
+  const location:Location = Route.params.data.location;
 
   const searchFilter = (text:string) => {
     if(datas){
@@ -102,7 +116,7 @@ const StoreList = () => {
         />
       }
     />
-  </SafeAreaView>): (<Text>hi</Text>)
+  </SafeAreaView>): (<Loading/>)
 }
 
 export default StoreList;
