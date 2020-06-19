@@ -87,6 +87,21 @@ type CoronaKorea {
   resultMessage: String
 }
 
+type CoronaKoreaNew {
+  data: [CityNew]
+}
+
+type CityNew {
+    countryName: String
+    newCase: String
+    totalCase: String
+    recovered: String
+    death: String
+    percentage: String
+    newFcase: String
+    newCcase: String
+}
+
 scalar Date
 
 input UserInput {
@@ -129,6 +144,7 @@ input MaskInput {
 type Query {
   Masks(input:MaskInput): Mask
   CoronaKorea: CoronaKorea
+  CoronaKoreaNew: CoronaKoreaNew
   Users: [User]
   Boards: [Board]
   BoardById(_id: ID!):[Board]

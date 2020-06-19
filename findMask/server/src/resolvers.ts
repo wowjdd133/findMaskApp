@@ -72,12 +72,23 @@ const resolvers = {
       try{
         const {data} = await axios.get('http://api.corona-19.kr/korea');
 
-        console.log(data);
         return data;
       } catch(err){
         console.error(err);
       }
     },
+    async CoronaKoreaNew(_:void, args:void){
+      try{
+        let {data} = await axios.get('http://api.corona-19.kr/korea/country/new');
+
+        console.log('corona');
+        data = Object.values(data);
+        return {data:data};
+      } catch(err){
+        console.error(err);
+      }
+    }
+    ,
     async Users(_:void, args:void) {
       try{
         console.log(args);
