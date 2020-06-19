@@ -1,4 +1,4 @@
-import {Store} from './StoreList'
+import {Store} from '../containers/StoreList'
 import React from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { View, Text, StyleSheet } from 'react-native';
@@ -6,6 +6,8 @@ import { MARKER_COLOR, REMAIN_STAT } from '../constants/MaskData';
 
 
 const StoreItem = ((item:Store) => {
+
+  console.log('StoreItem');
 
   return(
     <TouchableOpacity style={styles.item}>
