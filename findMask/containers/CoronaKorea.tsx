@@ -2,48 +2,23 @@ import * as React from 'react';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import Loading from '../components/Loading';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import KoreaIcon from '../svgs/Korea';
 import PieChart from '../components/PieChart';
+import BarChart from '../components/BarChart';
+import {GET_CORONA_KOREA_DATA} from '../querys/Corona'
 
-const GET_CORONA_KOREA_DATA = gql`
-  query getCoronaKorea{
-    CoronaKorea{
-      resultCode
-      TotalCase
-      TotalRecovered
-      TotalDeath
-      NowCase
-      city1n
-      city2n
-      city3n
-      city4n
-      city5n
-      city1p
-      city2p
-      city3p
-      city4p
-      city5p
-      resultMessage
-      updateTime
-      TotalCaseBefore
-      TodayDeath
-      TodayRecovered
-      TotalChecking
-      notcasePercentage
-      notcaseCount
-      casePercentage
-      caseCount
-      checkingPercentage
-      checkingCounter
-      deathPercentage
-      recoveredPercentage
-    }
-  }
-`
+interface CityType {
+  countryName: string;
+  newCase: number | string;
+  totalCase: string;
+  death: string;
+  recovered: string;
+}
 
-interface CoronaKoreaData {
+export interface CoronaKoreaData {
   CoronaKorea:{
+    [key: string]: string | number;
     resultCode: string;
     TotalCase: string;
     TotalRecovered: string;
@@ -73,6 +48,9 @@ interface CoronaKoreaData {
     checkingCounter: string;
     deathPercentage: number;
     recoveredPercentage: number;
+  },
+  CoronaKoreaNew: {
+    data: CityType[]
   }
 }
 
@@ -90,24 +68,81 @@ const CoronaKorea = () => {
     return <Text>에러가..났어요..</Text>
   }
 
-  console.log(data);
   if(data && data.CoronaKorea){
     const coronaData = data.CoronaKorea
+    let coronaCity = data.CoronaKoreaNew.data;
+    coronaCity.shift();
+    coronaCity.shift();
+    const koreaData = coronaCity.shift();
+    const chartData = coronaCity.filter((item) => item.newCase !== '0').map((item) => {
+      item.newCase = Number(item.newCase);
+      return item;
+    })
+
+    const CityList =
+          coronaCity.map((data) => {
+            const regex = /,/gi;
+            return(
+              <View key={data.countryName} 
+              style={{ 
+                width:"49%",
+                borderWidth:1,
+                height:175, 
+                borderRadius:25, 
+                alignItems:"center",
+                marginVertical:15,
+                justifyContent:"space-evenly"}}>
+                <Text style={{fontSize: 25}}>{data.countryName}</Text>
+                <View style={{borderRadius:25, 
+                  width:"95%",
+                  borderWidth:1,
+                  alignItems:"center",
+                  borderColor:"black",
+                  justifyContent:"center"}}>
+                  <Text style={{fontSize: 17}}>격리중: {Number(data.totalCase.replace(regex,''))-Number(data.death.replace(regex,''))-Number(data.recovered.replace(regex,''))}</Text>
+                </View>
+                <Text style={{fontSize: 17}}>총 확진자: {data.totalCase}</Text>
+                <Text style={{fontSize: 17}}>사망: {data.death}</Text>
+                <Text style={{fontSize: 17}}>격리해제: {data.recovered}</Text>
+              </View>
+            )
+          })
+
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <View style={styles.dataBox}>
-          <Text style={styles.titleText}>{coronaData.TotalCase}</Text>
-          <KoreaIcon size={256} color={"#000000"}/>
+          <View style={{paddingLeft: 35}}>
+            <Text style={{fontSize:25}}>대한민국 총 확진자</Text>
+            <Text style={styles.titleText}>{coronaData.TotalCase}명</Text>
+            </View>
+          <KoreaIcon size={164} color={"#ababab"}/>
         </View>
         <View style={styles.dataBox}>
-          <Text>{coronaData.TodayDeath} </Text>
-          <Text>{coronaData.TodayRecovered} </Text>
-          <Text>{coronaData.TotalCaseBefore}</Text>
+            <Text style={{fontSize:25}}>사망</Text>
+            <Text style={styles.titleText}>{coronaData.TotalDeath}명</Text>
         </View>
         <View style={styles.dataBox}>
-          <PieChart data={[]}/>
+              <Text style={{fontSize:25}}>격리해제</Text>
+            <Text style={styles.titleText}>{coronaData.TotalRecovered}명</Text>
         </View>
-      </View>
+        <View style={styles.dataBox}>
+          <BarChart
+            labels={["오늘 사망자","오늘 격리해제","오늘 확진자"]}
+            data={[parseInt(coronaData.TodayDeath), parseInt(coronaData.TodayRecovered), parseInt(koreaData.newCase)]}
+          />
+        </View>
+        <View style={styles.dataBox}>
+          {chartData === null ? <Text>확진자가 없습니다~!</Text>: <PieChart text={"오늘 확진자 비율"} data={chartData} x="countryName" y="newCase"/>}
+        </View>
+        <View style={styles.dataBox}>
+          <View style={{flex: 1, 
+            flexWrap: 'wrap', 
+            flexDirection:'row', 
+            justifyContent:'space-between'}}>
+            {CityList}
+          </View>
+        </View>
+      </ScrollView>
     )
   }
 
@@ -117,14 +152,15 @@ const CoronaKorea = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#ccc',
   },
   dataBox: {
-    flex: 1,
+    width: "100%",
+    borderRadius: 15,
+    backgroundColor: "#FFFFFF",
     alignItems: 'center',
-    paddingTop: 35,
+    justifyContent: 'space-around',
+    marginBottom: 2,
     flexDirection: 'row',
   },
   titleText: {
