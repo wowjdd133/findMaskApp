@@ -5,27 +5,11 @@ import {LocationType} from '../containers/MaskLocation';
 // import MarkerList from './MarkerList';
 import { useQuery } from '@apollo/react-hooks'
 import Loading from './Loading';
-import { FlatList,View,SafeAreaView } from 'react-native';
+import {View,SafeAreaView } from 'react-native';
 import MapView,{Marker, Callout} from 'react-native-maps';
 import {useNavigation } from '@react-navigation/native';
 import { MARKER_COLOR, REMAIN_STAT, LATITUDE_DELTA } from '../constants/MaskData';
-
-const GET_MASK_DATA = gql`
-  query getMasks($input:MaskInput!){
-    Masks(input: $input){
-      count
-      stores{
-        code,
-        addr,
-        name,
-        lat,
-        lng,
-        remain_stat,
-        stock_at
-      }
-    }
-  }
-`;
+import {GET_MASK_DATA} from '../querys/Corona';
 
 interface MaskInput {
   input : {
