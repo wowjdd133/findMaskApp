@@ -4,7 +4,7 @@ import { useRoute,RouteProp } from '@react-navigation/native'
 import { getDistanceFromLatLon, getElaspedTime} from '../utils/MaskUtil';
 import SearchBar from '../components/SearchBar';
 import SearchItem from '../components/SearchItem';
-import {Stores, MaskData} from '../components/MaskMap';
+import {Stores, MaskData} from './MaskMap';
 import Loading from '../components/Loading';
 
 interface StoreListProps {

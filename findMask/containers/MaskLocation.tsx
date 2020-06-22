@@ -1,7 +1,7 @@
 import React, {useEffect, useState, memo} from 'react';
 import * as Location from 'expo-location';
 import {Alert} from 'react-native';
-import MapContent from '../components/MaskMap';
+import MapContent from './MaskMap';
 import Loading from '../components/Loading';
 import {StyleSheet,View} from 'react-native';
 
