@@ -61,3 +61,30 @@ query getCoronaKorea{
   }
 }
 `
+
+export const GET_CORONA_WORLD_DATA = gql`
+  query getCoronaWorld{
+    CoronaWorld{
+      Global{
+        NewConfirmed
+        TotalConfirmed
+        NewDeaths
+        TotalDeaths
+        NewRecovered
+        TotalRecovered
+      }
+      Countries{
+        Country
+        CountryCode
+        Slug
+        NewConfirmed
+        TotalConfirmed
+        NewDeaths
+        TotalDeaths
+        NewRecovered
+        TotalRecovered
+        Date
+      }
+    }
+  }
+`
