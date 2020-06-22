@@ -1,11 +1,10 @@
 import React from 'react';
 import { View, Text } from "react-native"
+import CoronaWorldContainer from '../containers/CoronaWorld';
 
 const CoronaWorldScreen = () => {
   return (
-    <View>
-      <Text>World corona screen</Text>
-    </View>
+    <CoronaWorldContainer/>
   )
 };
 
