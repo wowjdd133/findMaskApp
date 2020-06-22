@@ -1,10 +1,10 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import {StyleSheet, Text, Dimensions, Alert, Linking, Button} from 'react-native'
-import {LocationType} from '../containers/MaskLocation';
+import {LocationType} from './MaskLocation';
 // import MarkerList from './MarkerList';
 import { useQuery } from '@apollo/react-hooks'
-import Loading from './Loading';
+import Loading from '../components/Loading';
 import {View,SafeAreaView } from 'react-native';
 import MapView,{Marker, Callout} from 'react-native-maps';
 import {useNavigation } from '@react-navigation/native';
