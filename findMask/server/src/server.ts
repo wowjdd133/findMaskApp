@@ -11,6 +11,7 @@ import {buildSchema} from 'type-graphql';
 import {UserResolver} from './resolver/UserResolver';
 import {BoardResolver} from './resolver/BoardResolver';
 import {ApolloContext} from './context/ApolloContext';
+import {ApolloAuthChecker} from'./validator/AuthChecker';
 
 // import {auth} from './middleware/auth';
 
@@ -26,7 +27,8 @@ createConnection()
     const server = new ApolloServer({
       context: ApolloContext,
       schema: await buildSchema({
-        resolvers: [UserResolver,BoardResolver]
+        resolvers: [UserResolver,BoardResolver],
+        authChecker: ApolloAuthChecker,
       }),
       validationRules: [depthLimit(7)],
       tracing: true
