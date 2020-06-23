@@ -87,6 +87,10 @@ export class UserResolver {
   )
   {
     try{
+      if(!user){
+        throw new ApolloError("invalid token");
+      }
+      
       if(id === user.id){
         if(name && phoneNumber && password){
           if(bcrypt.compareSync(password, user.password)){
@@ -112,6 +116,11 @@ export class UserResolver {
   )
   {
     try{
+
+      if(!user){
+        throw new ApolloError("invalid token");
+      }
+
       if(id === user.id){
         const user = await User.findOne({id: id});
   
