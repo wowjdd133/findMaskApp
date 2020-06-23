@@ -6,7 +6,7 @@ import { ApolloError } from "apollo-server-express";
 
 @Resolver(Board)
 export class BoardResolver {
-  
+
   @Query((returns) => [Board])
   async boards() {
     return await Board.find();
@@ -20,16 +20,21 @@ export class BoardResolver {
   @Authorized()
   @Mutation(() => Boolean)
   async deleteBoard(
-    @Ctx() apolloContext: ApolloContextInterface,
+    @Ctx() {user}: ApolloContextInterface,
     @Arg("id") id: string,
   )
   {
     try{
+
+      if(!user){
+        throw new ApolloError("invalid token");
+      }
+
       const BoardData = await Board.findOne({id: id});
 
       if(BoardData){
         console.log(BoardData);
-        if(BoardData.uid.id === apolloContext.user.id){
+        if(BoardData.uid.id === user.id){
           BoardData.remove();
   
           return true;
@@ -54,6 +59,11 @@ export class BoardResolver {
   )
   { 
     try{
+
+      if(!user){
+        throw new ApolloError("invalid token");
+      }
+
       const BoardData = await Board.findOne({id});
 
       if(BoardData){
