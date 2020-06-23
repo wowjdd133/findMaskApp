@@ -1,6 +1,7 @@
 import { ObjectType,registerEnumType, Field, ID } from 'type-graphql'
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn,  } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany,  } from 'typeorm'
 import {User} from './User';
+import {Comment} from './Comment';
 
 
 @ObjectType()
@@ -15,11 +16,11 @@ export class Board extends BaseEntity{
   title: string;
 
   @Field(() => User)
-  @ManyToOne(type => User, user => user.boards, {
-    eager: true
+  @ManyToOne(type => User, user => user.boards,{
+    eager:true
   })
   @JoinColumn({name: "uid"})
-  uid: string;
+  uid: User;
 
   @Field()
   @Column('text')
@@ -33,5 +34,7 @@ export class Board extends BaseEntity{
   @UpdateDateColumn({type: 'timestamp'})
   upodate_at?: Date;
 
-  //comment
+  @Field(() => Comment)
+  @OneToMany(type => Comment, Comment => Comment.bid,{nullable: true, cascade: true})
+  comments?: [Comment];
 }
