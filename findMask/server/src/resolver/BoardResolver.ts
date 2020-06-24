@@ -4,7 +4,7 @@ import { User } from "../entity/User";
 import { ApolloContextInterface } from "../context/ApolloContext";
 import { ApolloError } from "apollo-server-express";
 
-@Resolver(Board)
+@Resolver(() => Board)
 export class BoardResolver {
 
   @Query((returns) => [Board])
