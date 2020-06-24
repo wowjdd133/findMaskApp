@@ -4,7 +4,7 @@ import { ApolloContextInterface } from "../context/ApolloContext";
 import { ApolloError } from "apollo-server-express";
 import { Board } from "../entity/Board";
 
-@Resolver(Comment)
+@Resolver(() => Comment)
 export class CommentResolver {
   @Query(returns => [Comment])
   async comments(

@@ -5,7 +5,7 @@ import Permission from '../types/Permission';
 import {ApolloContextInterface} from '../context/ApolloContext';
 import { ApolloError } from 'apollo-server-express';
 
-@Resolver(User)
+@Resolver(() => User)
 export class UserResolver {
 
   @Query(returns => [User])
@@ -90,7 +90,7 @@ export class UserResolver {
       if(!user){
         throw new ApolloError("invalid token");
       }
-      
+
       if(id === user.id){
         if(name && phoneNumber && password){
           if(bcrypt.compareSync(password, user.password)){
