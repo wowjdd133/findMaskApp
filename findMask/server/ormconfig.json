@@ -2,7 +2,7 @@
   "type": "mysql",
   "host": "localhost",
   "port":3306,
-  "password":"123123",
+  "password":"가짜패스워드",
   "database": "board",
   "username": "root",
   "synchronize": true,
