@@ -10,6 +10,10 @@ import { createConnection } from "typeorm";
 import {buildSchema} from 'type-graphql';
 import {UserResolver} from './resolver/UserResolver';
 import {BoardResolver} from './resolver/BoardResolver';
+import {MaskResolver} from './resolver/MaskResolver';
+import {CoronaWorldResolver} from './resolver/CoronaWorldResolver';
+import {CoronaKoreaResolver} from './resolver/CoronaKoreaResolver'
+import {CoronaKoreaCityResolver} from './resolver/CoronaKoreaCityResolver';
 import {ApolloContext} from './context/ApolloContext';
 import {ApolloAuthChecker} from'./validator/AuthChecker';
 
@@ -27,7 +31,7 @@ createConnection()
     const server = new ApolloServer({
       context: ApolloContext,
       schema: await buildSchema({
-        resolvers: [UserResolver,BoardResolver],
+        resolvers: [UserResolver,BoardResolver,MaskResolver,CoronaWorldResolver,CoronaKoreaResolver,CoronaKoreaCityResolver],
         authChecker: ApolloAuthChecker,
       }),
       validationRules: [depthLimit(7)],
