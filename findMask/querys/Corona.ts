@@ -1,17 +1,19 @@
 import gql from "graphql-tag";
 
 export const GET_MASK_DATA = gql`
-query getMasks($input:MaskInput!){
-  Masks(input: $input){
+query getMasks($lat:Float!, $lng:Float!, $m:Float!){
+  Masks(lat:$lat lng:$lng m:$m){
     count
     stores{
-      code,
-      addr,
-      name,
-      lat,
-      lng,
-      remain_stat,
+      addr
+      code
+      created_at
+      lat
+      lng
+      name
+      remain_stat
       stock_at
+      type
     }
   }
 }
@@ -19,7 +21,7 @@ query getMasks($input:MaskInput!){
 
 export const GET_CORONA_KOREA_DATA = gql`
 query getCoronaKorea{
-  CoronaKorea{
+  CoronaKoreas{
     resultCode
     TotalCase
     TotalRecovered
@@ -50,13 +52,16 @@ query getCoronaKorea{
     deathPercentage
     recoveredPercentage
   }
-  CoronaKoreaNew{
+  CoronaKoreaCitys{
     data{
       countryName
       newCase
       totalCase
-      death
       recovered
+      death
+      percentage
+      newFcase
+      newCcase
     }
   }
 }
@@ -64,7 +69,7 @@ query getCoronaKorea{
 
 export const GET_CORONA_WORLD_DATA = gql`
   query getCoronaWorld{
-    CoronaWorld{
+    CoronaWorlds{
       Global{
         NewConfirmed
         TotalConfirmed

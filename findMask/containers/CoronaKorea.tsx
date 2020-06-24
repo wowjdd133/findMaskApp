@@ -11,15 +11,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface CityType {
   countryName: string;
-  newCase: number | string;
+  newCase: string | number;
   totalCase: string;
   death: string;
   recovered: string;
 }
 
 export interface CoronaKoreaData {
-  CoronaKorea: {
-    [key: string]: string | number;
+  CoronaKoreas: {
     resultCode: string;
     TotalCase: string;
     TotalRecovered: string;
@@ -50,7 +49,7 @@ export interface CoronaKoreaData {
     deathPercentage: number;
     recoveredPercentage: number;
   },
-  CoronaKoreaNew: {
+  CoronaKoreaCitys: {
     data: CityType[]
   }
 }
@@ -69,11 +68,9 @@ const CoronaKorea = () => {
     return <Text>에러가..났어요..</Text>
   }
 
-  if (data && data.CoronaKorea) {
-    const coronaData = data.CoronaKorea
-    let coronaCity = data.CoronaKoreaNew.data;
-    coronaCity.shift();
-    coronaCity.shift();
+  if (data) {
+    const coronaData = data.CoronaKoreas
+    let coronaCity = data.CoronaKoreaCitys.data;
     const koreaData = coronaCity.shift();
     const chartData = coronaCity.filter((item) => item.newCase !== '0').map((item) => {
       item.newCase = Number(item.newCase);

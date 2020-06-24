@@ -67,7 +67,6 @@ const MaskLocation = () => {
       }
     })();
     return(() => {
-      setLocation({});
       setLoading(false);
     })
   },[]);

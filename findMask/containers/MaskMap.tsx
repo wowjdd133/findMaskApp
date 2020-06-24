@@ -12,11 +12,9 @@ import { MARKER_COLOR, REMAIN_STAT, LATITUDE_DELTA } from '../constants/MaskData
 import {GET_MASK_DATA} from '../querys/Corona';
 
 interface MaskInput {
-  input : {
-    lat: number,
-    lon: number,
-    m: number,
-  }
+  lat: number,
+  lng: number,
+  m: number,
 };
 export interface Stores {
   name: string,
@@ -44,11 +42,9 @@ const MaskMap = (props:LocationType) => {
     if(props.coords){
       const { data, loading, error} = useQuery<MaskData, MaskInput>(GET_MASK_DATA, {
         variables: {
-          input:{
             lat: props.coords.latitude,
-            lon: props.coords.longitude,
-            m: 1500
-          }
+            lng: props.coords.longitude,
+            m: 5000
         }
       });
   

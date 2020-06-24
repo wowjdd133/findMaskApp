@@ -6,11 +6,9 @@ import { Text, View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlatList, TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
 import { COUNTRY_CODE } from '../constants/CountryCode';
-import { DataTable } from 'react-native-paper';
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 
 interface CoronaWorldData {
-  CoronaWorld: {
+  CoronaWorlds: {
     Global: {
       NewConfirmed: number,
       TotalConfirmed: number,
@@ -52,8 +50,8 @@ const CoronaWorld = () => {
   }
 
   if (data) {
-    const totalData = data.CoronaWorld.Global;
-    let countriesData = data.CoronaWorld.Countries;
+    const totalData = data.CoronaWorlds.Global;
+    let countriesData = data.CoronaWorlds.Countries;
     countriesData.sort((a, b) => {
       return b.TotalConfirmed - a.TotalConfirmed;
     });
