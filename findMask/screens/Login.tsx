@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
+import LoginContainer from '../containers/Login';
 
 const Login = () => {
   return (
-    <View>
-      <Text>login screen</Text>
-    </View>
+    <LoginContainer/>
   )
 }
 

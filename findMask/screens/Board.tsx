@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, Text} from 'react-native';
+import {View, Text} from 'react-native';
+import BoardContainer from '../containers/Board'
 
 const Board = () => {
   return(
-    <View>
-      <Text>Board screen</Text>
-    </View>
+    <BoardContainer/>
   )
 }
 
