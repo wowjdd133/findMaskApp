@@ -1,0 +1,12 @@
+import * as React from 'react';
+import {View, Text} from 'react-native';
+
+const WriteBoard = () => {
+  return (
+    <View>
+      <Text>이곳은 글쓰기여</Text>
+    </View>
+  )
+}
+
+export default WriteBoard;
