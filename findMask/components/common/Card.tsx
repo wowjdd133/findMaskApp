@@ -5,7 +5,7 @@ import { GestureResponderEvent } from 'react-native';
 interface CardProps extends CardStyleProps {
   children: React.ReactNode,
   onPress?: (event: GestureResponderEvent) => void;
-  touchable?: Boolean;
+  touchable?: boolean;
 }
 
 interface CardStyleProps {
@@ -15,26 +15,34 @@ interface CardStyleProps {
   backgroundColor?: string,
   paddingLeft?: number,
   paddingRight?: number,
+  justifyContent?: 'space-around' | 'center' | 'space-between',
+  row?: boolean;
+  flex?: number,
 }
 
 const Card = styled.View`
-  width: 100%;
+  flex:${(props: CardStyleProps) => props.flex};
+  alignSelf: stretch;
   marginTop: ${(props: CardStyleProps) => props.marginTop}px;
   paddingLeft: ${(props: CardStyleProps) => props.paddingLeft}px;
   paddingRight: ${(props: CardStyleProps) => props.paddingRight}px;
   backgroundColor: ${(props: CardStyleProps) => props.backgroundColor};
   borderRadius: ${(props: CardStyleProps) => props.radius}px;
   alignItems: ${(props: CardStyleProps) => props.align};
+  justifyContent: ${(props: CardStyleProps) => props.justifyContent};
+  flexDirection: ${(props: CardStyleProps) => props.row ? 'row' : 'column'};
 `
 
 const TouchableCard = styled.TouchableOpacity`
-  width: 100%;
+  flex:${(props: CardStyleProps) => props.flex};
   marginTop: ${(props: CardStyleProps) => props.marginTop}px;
   paddingLeft: ${(props: CardStyleProps) => props.paddingLeft}px;
   paddingRight: ${(props: CardStyleProps) => props.paddingRight}px;
   backgroundColor: ${(props: CardStyleProps) => props.backgroundColor};
   borderRadius: ${(props: CardStyleProps) => props.radius}px;
   alignItems: ${(props: CardStyleProps) => props.align};
+  justifyContent: ${(props: CardStyleProps) => props.justifyContent};
+  flexDirection: ${(props: CardStyleProps) => props.row ? 'row' : 'column'};
 `
 
 
@@ -48,6 +56,9 @@ const CardC = ({
   paddingRight = 0,
   onPress,
   touchable = false,
+  justifyContent = 'center',
+  row = false,
+  flex = 1,
 }: CardProps) => {
 
   const CardProps = {
@@ -57,6 +68,9 @@ const CardC = ({
     backgroundColor,
     paddingLeft,
     paddingRight,
+    justifyContent,
+    row,
+    flex
   }
 
   return (
