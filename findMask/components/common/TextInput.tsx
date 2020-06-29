@@ -1,63 +1,89 @@
 import React from 'react';
 import styled from 'styled-components/native';
+import { TextInputEndEditingEventData, NativeSyntheticEvent } from 'react-native';
 
 interface TextInputType extends TextInputStyleType {
   value: string;
   setValue: any;
   onChangeText?: (text: string) => void;
+  onEndEditing?: (event: NativeSyntheticEvent<TextInputEndEditingEventData>) => void;
   placeholder: string,
-  isPassword?: boolean
+  isPassword?: boolean,
+  maxLength?: number,
+  keyboardType?: 'default' | 'number-pad' | 'decimal-pad' | 'numeric' | 'email-address' | 'phone-pad' | 'ascii-capable' | 'numbers-and-punctuation' | 'url' | 'name-phone-pad' | 'visible-password' | 'twitter' | 'web-search';
+  multiline?: boolean,
+  numOfLines?: number,
 }
 
 interface TextInputStyleType {
-  height: number,
+  height?: string,
+  width?: string,
   radius?: number,
-  marginTop: number,
+  marginTop?: number,
 }
 
 const TextInput = styled.TextInput`
-  width: 80%;
+  height:${(props: TextInputStyleType) => props.height};
+  width:${(props: TextInputStyleType) => props.width};
   borderRadius: ${(props: TextInputStyleType) => props.radius}px;
-  height: ${(props: TextInputStyleType) => props.height}px;
   borderWidth: 1px;
   marginTop: ${(props: TextInputStyleType) => props.marginTop}px;
   paddingLeft: 10px;
   backgroundColor: #f8f9fa;
   borderColor: #e9ecef;
+  fontSize: 18px;
+  ${(props: TextInputType) => props.multiline ? 'textAlignVertical: top;' : ''}
 `
 
 const TextInputC = ({
-  height = 30,
+  height = "30px",
+  width = "100%",
   onChangeText,
   value,
   setValue,
   placeholder,
   radius = 5,
   marginTop = 0,
-  isPassword = false
+  isPassword = false,
+  keyboardType = 'default',
+  maxLength = 40,
+  onEndEditing,
+  multiline,
+  numOfLines,
 }: TextInputType) => {
 
-  onChangeText = (text) => {
-    setValue(text);
+  if (!onChangeText) {
+    onChangeText = (text) => {
+      setValue(text);
+    }
+  }
+
+  const textInputProps = {
+    onChangeText,
+    height,
+    value,
+    setValue,
+    placeholder,
+    radius,
+    marginTop,
+    isPassword,
+    keyboardType,
+    maxLength,
+    onEndEditing,
+    multiline,
+    numOfLines,
+    width,
   }
 
   return (
     isPassword ?
       <TextInput
+        blurOnSubmit={false}
         secureTextEntry={true}
-        marginTop={marginTop}
-        placeholder={placeholder}
-        height={height}
-        onChangeText={onChangeText}
-        value={value}
-        radius={radius}
+        {...textInputProps}
       /> : <TextInput
-        marginTop={marginTop}
-        placeholder={placeholder}
-        height={height}
-        onChangeText={onChangeText}
-        value={value}
-        radius={radius}
+        blurOnSubmit={false}
+        {...textInputProps}
       />
 
   )
