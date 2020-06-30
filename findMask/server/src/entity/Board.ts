@@ -32,7 +32,7 @@ export class Board extends BaseEntity{
 
   @Field()
   @UpdateDateColumn({type: 'timestamp'})
-  upodate_at?: Date;
+  update_at?: Date;
 
   @Field(() => Comment)
   @OneToMany(type => Comment, Comment => Comment.bid,{nullable: true, cascade: true})

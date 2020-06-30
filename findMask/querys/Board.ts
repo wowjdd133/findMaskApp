@@ -1,7 +1,6 @@
 import gql from "graphql-tag";
 
-
-export const GET_BOARD_DATA = gql`
+export const GET_BOARDS = gql`
   query{
     boards{
       id
@@ -13,25 +12,25 @@ export const GET_BOARD_DATA = gql`
       }
       content
       create_at
-      upodate_at
+      update_at
     }
   }
 `;
 
 export const WRITE_BOARD = gql`
-  mutation writeBoard(title: String! content: String!){
+  mutation writeBoard($title: String! $content: String!){
     writeBoard(title: $title, content: $content)
   }
 `;
 
 export const UPDATE_BOARD = gql`
-  mutation updateBoard(title: String! content: String! id:ID!){
+  mutation updateBoard($title: String! $content: String! $id:ID!){
     updateBoard(title: $title, content: $content, id:$id)
   }
 `
 
 export const DELETE_BOARD = gql`
-  mutation deleteBoard(id: ID!){
+  mutation deleteBoard($id: ID!){
     deleteBoard(id:$id)
   }
 `
