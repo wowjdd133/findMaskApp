@@ -14,7 +14,8 @@ const Navigation = () => {
 
   const MaskStack = () => {
     return (
-      <Stack.Navigator>
+      <Stack.Navigator
+        headerMode="none">
         <Stack.Screen name="Map" component={screens.MapScreen} />
         <Stack.Screen name="List" component={screens.StoreListScreen} />
       </Stack.Navigator>
@@ -23,7 +24,8 @@ const Navigation = () => {
 
   const LoginStack = () => {
     return (
-      <Stack.Navigator>
+      <Stack.Navigator
+        headerMode="none">
         <Stack.Screen name="Login" component={screens.LoginScreen} />
         <Stack.Screen name="Register" component={screens.RegisterScreen} />
       </Stack.Navigator>
@@ -32,9 +34,10 @@ const Navigation = () => {
 
   const BoardStack = () => {
     return (
-      <Stack.Navigator>
+      <Stack.Navigator
+        headerMode="none">
         <Stack.Screen name="BoardList" component={screens.BoardListScreen} />
-        <Stack.Screen name="WriteBoard" component={screens.WriteBoardScreen}/>
+        <Stack.Screen name="WriteBoard" component={screens.WriteBoardScreen} />
         <Stack.Screen name="Board" component={screens.BoardScreen} />
       </Stack.Navigator>
     )
@@ -56,7 +59,10 @@ const Navigation = () => {
         tabBarOptions={{
           activeTintColor: '#FFFFFF',
           labelStyle: { fontSize: 12 },
-          style: { backgroundColor: '#cecece' },
+          style: { 
+            backgroundColor: '#cecece',
+            height: 50,
+          },
         }}>
         <BottomTab.Screen
           name="Mask"
