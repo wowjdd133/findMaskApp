@@ -16,13 +16,27 @@ interface CardStyleProps {
   paddingLeft?: number,
   paddingRight?: number,
   justifyContent?: 'space-around' | 'center' | 'space-between',
-  row?: boolean;
+  row?: boolean,
   flex?: number,
+  height?: string,
+  borderBottom?: number,
+  borderBottomColor?: string,
 }
 
 const Card = styled.View`
-  flex:${(props: CardStyleProps) => props.flex};
+  ${(props: CardStyleProps) => 
+    props.flex ? `flex: ${props.flex};` : ''
+  }
   alignSelf: stretch;
+  ${(props: CardStyleProps) => 
+    props.height ? `height: ${props.height};` : ''
+  }
+  ${(props: CardStyleProps) => 
+    props.borderBottomColor ? `borderBottomColor: ${props.borderBottomColor};` : ''
+  }
+  ${(props: CardStyleProps) => 
+    props.borderBottom ? `borderBottomWidth: ${props.borderBottom}px;` : ''
+  }
   marginTop: ${(props: CardStyleProps) => props.marginTop}px;
   paddingLeft: ${(props: CardStyleProps) => props.paddingLeft}px;
   paddingRight: ${(props: CardStyleProps) => props.paddingRight}px;
@@ -34,7 +48,15 @@ const Card = styled.View`
 `
 
 const TouchableCard = styled.TouchableOpacity`
-  flex:${(props: CardStyleProps) => props.flex};
+  ${(props: CardStyleProps) => 
+    props.height ? `height: ${props.height};` : props.flex ? `flex: ${props.flex};`: ''
+  }
+  ${(props: CardStyleProps) => 
+    props.borderBottomColor ? `borderBottomColor: ${props.borderBottomColor};` : ''
+  }
+  ${(props: CardStyleProps) => 
+    props.borderBottom ? `borderBottomWidth: ${props.borderBottom}px;` : ''
+  }
   marginTop: ${(props: CardStyleProps) => props.marginTop}px;
   paddingLeft: ${(props: CardStyleProps) => props.paddingLeft}px;
   paddingRight: ${(props: CardStyleProps) => props.paddingRight}px;
@@ -58,7 +80,10 @@ const CardC = ({
   touchable = false,
   justifyContent = 'center',
   row = false,
-  flex = 1,
+  flex,
+  height,
+  borderBottom,
+  borderBottomColor,
 }: CardProps) => {
 
   const CardProps = {
@@ -70,7 +95,10 @@ const CardC = ({
     paddingRight,
     justifyContent,
     row,
-    flex
+    flex,
+    height,
+    borderBottom,
+    borderBottomColor
   }
 
   return (
