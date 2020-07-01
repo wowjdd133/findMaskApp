@@ -36,7 +36,7 @@ const Register = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        keyboardVerticalOffset={150}
+        keyboardVerticalOffset={100}
         behavior={Platform.OS == "ios" ? "padding" : "height"}
       >
         <Card align="flex-start"
@@ -96,6 +96,8 @@ const Register = () => {
           />
 
           <Button
+            backgroundColor="rgba(44,130,201,1)"
+            color="#FFFFFF"
             onPress={async () => {
               if (!isEmail(email)) {
                 Alert.alert("회원가입 실패", "이메일 확인.");

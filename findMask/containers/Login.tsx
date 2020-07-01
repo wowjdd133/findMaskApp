@@ -20,7 +20,6 @@ const Login = () => {
   const [loginState, setLoginState] = useState(true);
   const [login, { data }] = useMutation(LOGIN);
 
-  console.log(data);
   if (data) {
     AsyncStorage.setItem('token', data.login);
 
@@ -58,9 +57,10 @@ const Login = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
-      <Card radius={25}>
-        <Card row={true} justifyContent="space-around" align="center">
+      <Card radius={25} flex={1}>
+        <Card row={true} justifyContent="space-around" align="center" flex={1}>
           <Card align="flex-start"
+            flex={1}
             paddingLeft={30}
             onPress={goBack}
             touchable
@@ -97,16 +97,20 @@ const Login = () => {
             isPassword={true}
           />
           <Button
+            around
+            backgroundColor="rgba(44,130,201,1)"
+            color="#FFFFFF"
             onPress={() => {
               navigation.navigate('Register')
             }}
             title="아이디가 없으신가요?"
-            color="rgba(44,130,201,1)"
           />
           <Button
+            around
+            backgroundColor="rgba(44,130,201,1)"
+            color="#FFFFFF"
             onPress={handleLogin}
             title="로그인"
-            color="rgba(44,130,201,1)"
             width="90%"
             disabled={loginState}
           />
