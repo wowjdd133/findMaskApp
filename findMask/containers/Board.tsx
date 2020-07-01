@@ -10,6 +10,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TextInputC from '../components/common/TextInput';
 import ButtonC from '../components/common/Button';
+import {WRITE_COMMENT} from '../querys/Comment';
 
 interface BoardData {
   board: {
@@ -37,6 +38,16 @@ interface BoardsData {
     create_at: Date;
     update_at: Date;
     viewCount: number;
+    comments? : {
+      id: string;
+      content: string;
+      create_at: Date;
+      update_at: Date;
+      author: {
+        email: string;
+        name: string;
+      }
+    }
   }[];
 }
 
@@ -55,7 +66,7 @@ const Board = () => {
 
   const [ upViewCount, {data:ViewCountData}] = useMutation(UP_VIEWCOUNT);
 
-  // const [ writeComment, {data:commentData, loading:commentLoading, error:commentError}] = useMutation();
+  const [ writeComment, {data:commentData, loading:commentLoading, error:commentError}] = useMutation(WRITE_COMMENT);
   
   React.useEffect(() => {
     upViewCount({
@@ -64,7 +75,6 @@ const Board = () => {
       }
     });
   },[])
-
 
   const { data, loading, error } = useQuery<BoardData>(GET_BOARD, {
     variables: {
@@ -112,6 +122,7 @@ const Board = () => {
             </CardC>
           </CardC>
           <CardC
+            flex={1}
             borderBottom={1}
             borderBottomColor="#ced4da">
               <CardC
@@ -121,16 +132,27 @@ const Board = () => {
                     placeholder="댓글쓰기"
                     setValue={setComment}
                     value={comment}
-                    height="120px"
+                    height="100px"
                   />
                   <ButtonC
                     stretch
                     backgroundColor="#eeeeee"
                     color="#ffffff"
                     width="20%"
-                    onPress={(event:GestureResponderEvent) => {
+                    onPress={async (event:GestureResponderEvent) => {
                       event.preventDefault();
-                      console.log('hi');
+                      try{
+                        await writeComment({
+                          variables:{
+                            bid: data.board.id,
+                            content: comment
+                          }
+                        });
+                        Alert.alert("글쓰기 성공");
+                      }catch(err){
+                        Alert.alert("글쓰기 실패",err.message)
+                        console.log(err);
+                      }
                     }}
                     title="댓글 등록"
                   />

@@ -17,7 +17,7 @@ const Chart = ({data,x,y,text}:ChartProps) => {
         data={data}
         x={x}
         y={y}
-        width={(Dimensions.get('screen').width)}
+        width={Dimensions.get('screen').width-20}
         innerRadius={110}
         animate={{
           duration: 2000
@@ -26,7 +26,7 @@ const Chart = ({data,x,y,text}:ChartProps) => {
         children={<Text>hi</Text>}
       />
       <VictoryLabel
-        x={Dimensions.get('screen').width/2-45}
+        x={Dimensions.get('screen').width/2-55}
         y={175}
         style={{fontSize: 15}}
         text={text}
