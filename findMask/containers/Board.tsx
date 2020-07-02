@@ -1,16 +1,16 @@
 import * as React from 'react';
-import { View, Text, Alert, TouchableOpacity, GestureResponderEvent } from 'react-native';
+import { View, Text, Alert, TouchableOpacity, GestureResponderEvent, Image } from 'react-native';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { GET_BOARD, GET_BOARDS, UP_VIEWCOUNT } from '../querys/Board';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import Loading from '../components/Loading';
 import CardC from '../components/common/Card';
 import TextC from '../components/common/Text';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TextInputC from '../components/common/TextInput';
 import ButtonC from '../components/common/Button';
-import {WRITE_COMMENT} from '../querys/Comment';
+import { WRITE_COMMENT } from '../querys/Comment';
 
 interface BoardData {
   board: {
@@ -24,6 +24,17 @@ interface BoardData {
     create_at: Date;
     update_at: Date;
     viewCount: number;
+    image?: string;
+    comments?: {
+      id: string;
+      content: string;
+      create_at: Date;
+      update_at: Date;
+      author: {
+        email: string;
+        name: string;
+      }
+    }[]
   };
 }
 
@@ -38,16 +49,7 @@ interface BoardsData {
     create_at: Date;
     update_at: Date;
     viewCount: number;
-    comments? : {
-      id: string;
-      content: string;
-      create_at: Date;
-      update_at: Date;
-      author: {
-        email: string;
-        name: string;
-      }
-    }
+    image?: string;
   }[];
 }
 
@@ -64,23 +66,28 @@ const Board = () => {
   const route = useRoute<BoardRouteProps>();
   const navigation = useNavigation();
 
-  const [ upViewCount, {data:ViewCountData}] = useMutation(UP_VIEWCOUNT);
+  const [upViewCount, { data: ViewCountData }] = useMutation(UP_VIEWCOUNT);
 
-  const [ writeComment, {data:commentData, loading:commentLoading, error:commentError}] = useMutation(WRITE_COMMENT);
-  
+  const [writeComment, { data: commentData, loading: commentLoading, error: commentError }] = useMutation(WRITE_COMMENT);
+
   React.useEffect(() => {
     upViewCount({
-      variables:{
+      variables: {
         id: route.params.id
       }
     });
-  },[])
+  }, [])
 
-  const { data, loading, error } = useQuery<BoardData>(GET_BOARD, {
+  const { data, loading, error, refetch, networkStatus } = useQuery<BoardData>(GET_BOARD, {
     variables: {
       id: route.params.id
-    }
+    },
+    notifyOnNetworkStatusChange: true
   });
+
+  if (networkStatus == 4) {
+    console.log('실패')
+  }
 
   const { data: listData, loading: listLoading, error: listError } = useQuery<BoardsData>(GET_BOARDS)
 
@@ -95,7 +102,10 @@ const Board = () => {
     Alert.alert("에러", error.message);
   }
 
+  
+
   if (data) {
+    console.warn(data.board);
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView>
@@ -115,6 +125,10 @@ const Board = () => {
               borderBottom={1}
               borderBottomColor="#ced4da">
               <CardC flex={1}>
+                {data.board.image && (<Image
+                  source={{uri: data.board.image}}
+                  style={{width: '100%', height: 200, resizeMode:'contain'}}
+                />)}
                 <TextC
                   fontSize={24}
                 >{data.board.content}</TextC>
@@ -125,38 +139,57 @@ const Board = () => {
             flex={1}
             borderBottom={1}
             borderBottomColor="#ced4da">
-              <CardC
-                flex={1}
-                row>
-                  <TextInputC
-                    placeholder="댓글쓰기"
-                    setValue={setComment}
-                    value={comment}
-                    height="100px"
-                  />
-                  <ButtonC
-                    stretch
-                    backgroundColor="#eeeeee"
-                    color="#ffffff"
-                    width="20%"
-                    onPress={async (event:GestureResponderEvent) => {
-                      event.preventDefault();
-                      try{
-                        await writeComment({
-                          variables:{
-                            bid: data.board.id,
-                            content: comment
-                          }
-                        });
-                        Alert.alert("글쓰기 성공");
-                      }catch(err){
-                        Alert.alert("글쓰기 실패",err.message)
-                        console.log(err);
+            <CardC
+              flex={1}
+              row>
+              <TextInputC
+                placeholder="댓글쓰기"
+                setValue={setComment}
+                value={comment}
+                height="100px"
+              />
+              <ButtonC
+                stretch
+                backgroundColor="#eeeeee"
+                color="#ffffff"
+                width="20%"
+                onPress={async (event: GestureResponderEvent) => {
+                  event.preventDefault();
+                  try {
+                    await writeComment({
+                      variables: {
+                        bid: data.board.id,
+                        content: comment
                       }
-                    }}
-                    title="댓글 등록"
-                  />
-              </CardC>
+                    });
+                    refetch();
+                    Alert.alert("글쓰기 성공");
+                  } catch (err) {
+                    Alert.alert("글쓰기 실패", err.message)
+                    console.log(err);
+                  }
+                }}
+                title="댓글 등록"
+              />
+
+              {/* <FlatList
+                    data={data.board.comments}
+                    renderItem={({item}) => 
+                      <CardC row >
+                        <TextC fontSize={16}>{item.content}</TextC>
+                      </CardC>
+                    }
+                  /> */}
+            </CardC>
+            {data.board.comments ? data.board.comments.map((item) => {
+              return (
+                <CardC row borderBottom={1} borderBottomColor="#e3e3e3" key={item.id}>
+                  <TextC fontSize={16}>{item.content} </TextC>
+                  <TextC fontSize={16}>{item.author.name} </TextC>
+                  <TextC fontSize={16}>{item.create_at} </TextC>
+                </CardC>
+              )
+            }) : ''}
           </CardC>
           <CardC>
             {
@@ -170,7 +203,7 @@ const Board = () => {
                           id: item.id
                         });
                       }}
-                      style={{ flex: 1, alignSelf:'stretch'}}
+                      style={{ flex: 1, alignSelf: 'stretch' }}
                       key={item.id}>
                       <CardC borderBottom={1}
                         borderBottomColor="#ced4da">
