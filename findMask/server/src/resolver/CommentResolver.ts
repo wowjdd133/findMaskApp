@@ -3,6 +3,7 @@ import { Comment } from "../entity/Comment";
 import { ApolloContextInterface } from "../context/ApolloContext";
 import { ApolloError } from "apollo-server-express";
 import { Board } from "../entity/Board";
+import { User } from "../entity/User";
 
 @Resolver(() => Comment)
 export class CommentResolver {
@@ -23,14 +24,14 @@ export class CommentResolver {
   { 
     try{
 
+      if(!user){
+        throw new ApolloError("invalid token");
+      }
+
       const comment = await Comment.findOne({where: {id: id}});
 
       if(!comment){
         throw new ApolloError("invalid comment");
-      }
-
-      if(!user){
-        throw new ApolloError("invalid token");
       }
 
       if(content){
@@ -98,7 +99,21 @@ export class CommentResolver {
         bid: board,
         content: content,
         author: user
-      });
+      }).save();
+
+      // if(!board.comments){
+      //   board.comments = [comment];
+      // }else {
+      //   board.comments.push(comment);
+      // }
+
+      // board.content = "아닙니다.";
+      
+      // await board.save();
+
+      // console.log(board);
+
+      return true;
 
     }catch(err){
       console.error(err);

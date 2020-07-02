@@ -13,6 +13,7 @@ import {BoardResolver} from './resolver/BoardResolver';
 import {MaskResolver} from './resolver/MaskResolver';
 import {CoronaWorldResolver} from './resolver/CoronaWorldResolver';
 import {CoronaKoreaResolver} from './resolver/CoronaKoreaResolver'
+import {CommentResolver} from './resolver/CommentResolver';
 import {CoronaKoreaCityResolver} from './resolver/CoronaKoreaCityResolver';
 import {ApolloContext} from './context/ApolloContext';
 import {ApolloAuthChecker} from'./validator/AuthChecker';
@@ -31,7 +32,7 @@ createConnection()
     const server = new ApolloServer({
       context: ApolloContext,
       schema: await buildSchema({
-        resolvers: [UserResolver,BoardResolver,MaskResolver,CoronaWorldResolver,CoronaKoreaResolver,CoronaKoreaCityResolver],
+        resolvers: [UserResolver,BoardResolver,MaskResolver,CoronaWorldResolver,CoronaKoreaResolver,CoronaKoreaCityResolver,CommentResolver],
         authChecker: ApolloAuthChecker,
       }),
       validationRules: [depthLimit(7)],
@@ -48,11 +49,3 @@ createConnection()
     );
   })
   .catch((err) => console.error(err));
-
-// mongoose.Promise = global.Promise;
-// //env로 바꾸기.. 현재 dotenv를 써도 오류가 뜸.
-// mongoose.connect(process.env.MONGO_DB || "", {
-//   useUnifiedTopology: true,
-//   useCreateIndex: true,
-//   useNewUrlParser: true,
-//   useFindAndModify: false,});

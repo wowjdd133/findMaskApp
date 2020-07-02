@@ -24,8 +24,8 @@ export class Comment extends BaseEntity{
   update_at: Date;
 
   @Field(() => Board)
-  @ManyToOne(type => Board, board => board.comments,
-    {eager:true})
+  @ManyToOne(() => Board, (board) => board.comments,
+    {eager:true, onDelete:'CASCADE'})
   @JoinColumn({name: "bid"})
   bid: Board;
 
@@ -34,7 +34,7 @@ export class Comment extends BaseEntity{
   // recomment?: Recomment;
 
   @Field(() => User)
-  @ManyToOne(type => User, user => user.comments, {eager:true})
+  @ManyToOne(() => User, (user) => user.comments, {eager:true})
   @JoinColumn({name: "author"})
   author: User;
 }
