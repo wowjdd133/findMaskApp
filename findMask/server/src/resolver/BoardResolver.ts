@@ -109,6 +109,7 @@ export class BoardResolver {
     @Arg("title") title: string,
     @Arg("content") content: string,
     @Ctx() apolloContext: ApolloContextInterface,
+    @Arg("image",{nullable: true}) image?: string,
   ) {
     try {
       const user = apolloContext.user;
@@ -123,6 +124,7 @@ export class BoardResolver {
         title,
         uid: user,
         content,
+        image,
       }).save();
 
       return board.id;

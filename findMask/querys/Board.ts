@@ -40,13 +40,14 @@ export const GET_BOARD = gql`
           name
         }
       }
+      image
     }
   }
 `;
 
 export const WRITE_BOARD = gql`
-  mutation writeBoard($title: String!, $content: String!) {
-    writeBoard(title: $title, content: $content)
+  mutation writeBoard($title: String!, $content: String!, $image: String) {
+    writeBoard(title: $title, content: $content, image: $image)
   }
 `;
 

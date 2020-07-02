@@ -1,7 +1,8 @@
-import { ObjectType,registerEnumType, Field, ID } from 'type-graphql'
+import { ObjectType,registerEnumType, Field, ID, Int } from 'type-graphql'
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany,  } from 'typeorm'
 import {User} from './User';
 import {Comment} from './Comment';
+import { IsNotEmpty } from 'class-validator';
 
 
 @ObjectType()
@@ -32,9 +33,20 @@ export class Board extends BaseEntity{
 
   @Field()
   @UpdateDateColumn({type: 'timestamp'})
-  update_at?: Date;
+  update_at: Date;
 
-  @Field(() => Comment)
-  @OneToMany(type => Comment, Comment => Comment.bid,{nullable: true, cascade: true})
-  comments?: [Comment];
+  @Field({nullable: true})
+  @Column('text', {nullable: true})
+  image?: string;
+
+  @Field(() => Comment,{nullable:true})
+  @OneToMany(type => Comment, Comment => Comment.bid,{
+    cascade: true
+  })
+  @JoinColumn({name: "comments"})
+  comments?: Comment[];
+
+  @Field(() => Int, {defaultValue:0})
+  @Column('int',{default: 0})
+  viewCount: number;
 }
