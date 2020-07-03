@@ -18,7 +18,7 @@ export interface CoronaKoreaType {
     city4p: string
     city5p: string
     recoveredPercentage: number
-    deathPercentage: number
+    deathPercentage?: number
     checkingCounter: string
     checkingPercentage: string
     caseCount: string
@@ -68,8 +68,8 @@ export class CoronaKorea {
   city5p: string;
   @Field(() => Number)
   recoveredPercentage: number
-  @Field(() => Number)
-  deathPercentage: number
+  @Field(() => Number,{nullable:true})
+  deathPercentage?: number
   @Field()
   checkingCounter: string;
   @Field()

@@ -7,8 +7,10 @@ export class CoronaKoreaCityResolver {
   @Query(returns => CoronaKoreaCity)
   async CoronaKoreaCitys(): Promise<CoronaKoreaCity>{
     
+    const serviceKey = process.env.API_KEY;
+
     try{
-      let { data } = await axios.get('http://api.corona-19.kr/korea/country/new');
+      let { data } = await axios.get(`http://api.corona-19.kr/korea/country/new?serviceKey=${serviceKey}`);
 
       data = Object.values(data);
       data.shift();
