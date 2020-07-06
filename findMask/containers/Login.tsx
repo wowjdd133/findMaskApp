@@ -10,9 +10,12 @@ import Button from '../components/common/Button';
 import Close from '../svgs/Close';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { isEmail } from '../utils/loginUtil';
+import ButtonC from '../components/common/Button';
+import TopComponent from '../components/common/TopComponent';
+import Login from '../components/login';
 
 //뒤로가기 헤더에 놔두기
-const Login = () => {
+const LoginContainer = () => {
 
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
@@ -32,6 +35,11 @@ const Login = () => {
   const goBack = (e: GestureResponderEvent) => {
     e.preventDefault();
     navigation.navigate('Board');
+  }
+
+  const handleOnPress = (e: GestureResponderEvent) => {
+    e.preventDefault();
+    navigation.navigate('Register')
   }
 
   const handleLogin = async (e: GestureResponderEvent) => {
@@ -55,69 +63,28 @@ const Login = () => {
     }
   }
 
+  const handleChangeText = (text: string) => {
+    if (text.length <= 7) {
+      setLoginState(true);
+    } else {
+      setLoginState(false);
+    }
+    setPassword(text);
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
-      <Card radius={25} flex={1}>
-        <Card row={true} justifyContent="space-around" align="center" flex={1}>
-          <Card align="flex-start"
-            flex={1}
-            paddingLeft={30}
-            onPress={goBack}
-            touchable
-          >
-            <Close color="#000000" size={20} />
-          </Card>
-        </Card>
-        <Card flex={5} justifyContent="space-around">
-          <Text fontSize={30} marginTop={30}>
-            Find Mask App
-          </Text>
-          <TextInput
-            keyboardType="email-address"
-            maxLength={25}
-            height="45px"
-            setValue={setEmail}
-            value={email}
-            placeholder="Email"
-          />
-          <TextInput
-            height="45px"
-            maxLength={15}
-            setValue={setPassword}
-            value={password}
-            onChangeText={(text: string) => {
-              if (text.length <= 7) {
-                setLoginState(true);
-              } else {
-                setLoginState(false);
-              }
-              setPassword(text);
-            }}
-            placeholder="Password"
-            isPassword={true}
-          />
-          <Button
-            around
-            backgroundColor="rgba(44,130,201,1)"
-            color="#FFFFFF"
-            onPress={() => {
-              navigation.navigate('Register')
-            }}
-            title="아이디가 없으신가요?"
-          />
-          <Button
-            around
-            backgroundColor="rgba(44,130,201,1)"
-            color="#FFFFFF"
-            onPress={handleLogin}
-            title="로그인"
-            width="90%"
-            disabled={loginState}
-          />
-        </Card>
-      </Card>
-    </SafeAreaView>
+    <Login
+      email={email}
+      setEmail={setEmail}
+      password={password}
+      setPassword={setPassword}
+      loginState={loginState}
+      goBack={goBack}
+      handleOnPress={handleOnPress}
+      handleLogin={handleLogin}
+      handleChangeText={handleChangeText}
+    />
   )
 }
 
-export default Login;
+export default LoginContainer;
