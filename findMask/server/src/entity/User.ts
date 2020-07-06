@@ -47,6 +47,10 @@ export class User extends BaseEntity{
   @OneToMany(type => Comment, comment => comment.author ,{nullable:true, cascade: true})
   comments? : Comment[]
 
+  @Field({nullable:true})
+  @Column('text', {nullable:true})
+  image?: string;
+
   // @Field(() => Comment)
   // @OneToMany(type => Recomment, recomment => recomment.author ,{nullable:true, cascade: true})
   // recomments? : Recomment[]

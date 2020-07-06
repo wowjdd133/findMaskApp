@@ -8,7 +8,7 @@ import {User} from './User';
 @ObjectType()
 export class Comment extends BaseEntity{
   @Field(() => ID)
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Field()
