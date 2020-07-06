@@ -3,13 +3,20 @@ import 'moment-timezone';
 
 moment.tz.setDefault("Asia/Seoul");
 
-export const getElaspedTime = (time:string) => {
+export const getElaspedTime = (time:string | Date) => {
   
   let now = moment()
+
+  let timeValue;
+
+  if(typeof time == 'string'){
+    timeValue = moment(
+      (time || "").replace(/-/g, "/").replace(/[TZ]/g, " ").split(".")[0], "YYYY/MM/DD HH:mm:ss"
+    );
+  } else {
+    timeValue = moment(time);
+  }
   
-  const timeValue = moment(
-    (time || "").replace(/-/g, "/").replace(/[TZ]/g, " ").split(".")[0], "YYYY/MM/DD HH:mm:ss"
-  );
   const min = 60;
   //date.getTime() -> msec. so /1000
   let elaspedTime = now.diff(timeValue, 'seconds');

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text, Alert, TouchableOpacity, GestureResponderEvent, Image } from 'react-native';
-import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
+import { useRoute, RouteProp, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { GET_BOARD, GET_BOARDS, UP_VIEWCOUNT } from '../querys/Board';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import Loading from '../components/Loading';
@@ -10,7 +10,8 @@ import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TextInputC from '../components/common/TextInput';
 import ButtonC from '../components/common/Button';
-import { WRITE_COMMENT } from '../querys/Comment';
+import { WRITE_COMMENT, DELETE_COMMENT } from '../querys/Comment';
+import {getElaspedTime} from '../utils/MaskUtil';
 
 interface BoardData {
   board: {
@@ -68,7 +69,9 @@ const Board = () => {
 
   const [upViewCount, { data: ViewCountData }] = useMutation(UP_VIEWCOUNT);
 
-  const [writeComment, { data: commentData, loading: commentLoading, error: commentError }] = useMutation(WRITE_COMMENT);
+  const [writeComment, { data: writeCommentData, loading: writeCommentLoading, error: writeCommentError }] = useMutation(WRITE_COMMENT);
+
+  const [deleteComment, { data: deleteCommentData, loading : deleteCommentLoading, error: deleteCommentError}] = useMutation(DELETE_COMMENT);
 
   React.useEffect(() => {
     upViewCount({
@@ -76,12 +79,13 @@ const Board = () => {
         id: route.params.id
       }
     });
-  }, [])
-
+  }, []);
+  
   const { data, loading, error, refetch, networkStatus } = useQuery<BoardData>(GET_BOARD, {
     variables: {
       id: route.params.id
     },
+    fetchPolicy:'no-cache',
     notifyOnNetworkStatusChange: true
   });
 
@@ -90,7 +94,6 @@ const Board = () => {
   }
 
   const { data: listData, loading: listLoading, error: listError } = useQuery<BoardsData>(GET_BOARDS)
-
 
   const [comment, setComment] = React.useState('');
 
@@ -102,10 +105,7 @@ const Board = () => {
     Alert.alert("에러", error.message);
   }
 
-  
-
   if (data) {
-    console.warn(data.board);
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView>
@@ -120,8 +120,14 @@ const Board = () => {
               <TextC
                 fontSize={16}
               >{data.board.uid.name}</TextC>
+              <TextC
+                fontSize={16}
+              >
+                {data.board.viewCount}
+              </TextC>
             </CardC>
             <CardC flex={1}
+              minHeight="300px"
               borderBottom={1}
               borderBottomColor="#ced4da">
               <CardC flex={1}>
@@ -171,25 +177,38 @@ const Board = () => {
                 }}
                 title="댓글 등록"
               />
-
-              {/* <FlatList
-                    data={data.board.comments}
-                    renderItem={({item}) => 
-                      <CardC row >
-                        <TextC fontSize={16}>{item.content}</TextC>
-                      </CardC>
-                    }
-                  /> */}
             </CardC>
-            {data.board.comments ? data.board.comments.map((item) => {
+            {data.board.comments && data.board.comments.length > 0 ? data.board.comments.map((item) => {
+              console.log(item);
               return (
-                <CardC row borderBottom={1} borderBottomColor="#e3e3e3" key={item.id}>
+                <CardC flex={1} row borderBottom={1} borderBottomColor="#e3e3e3" key={item.id}>
                   <TextC fontSize={16}>{item.content} </TextC>
                   <TextC fontSize={16}>{item.author.name} </TextC>
-                  <TextC fontSize={16}>{item.create_at} </TextC>
+                  <TextC fontSize={16}>{getElaspedTime(item.update_at)} </TextC>
+                  <ButtonC
+                    backgroundColor="#eeeeee"
+                    color="#ffffff"
+                    onPress={async() => {
+                      try{
+                        await deleteComment({
+                          variables:{
+                            id: item.id
+                          }
+                        });
+                        refetch();
+                        Alert.alert("성공");
+                      } catch(err){
+                        console.log(err);
+                        Alert.alert("실패")
+                      }
+                    }}
+                    title="삭제"
+                  />
                 </CardC>
               )
-            }) : ''}
+            }) : <CardC>
+              <TextC fontSize={24}>댓글이 없습니다.</TextC>
+              </CardC>}
           </CardC>
           <CardC>
             {
@@ -210,8 +229,7 @@ const Board = () => {
                         <TextC fontSize={32}>{item.title}</TextC>
                         <TextC fontSize={16}>{item.viewCount}</TextC>
                         <TextC fontSize={16}>{item.uid.name}</TextC>
-                        <TextC fontSize={16}>{item.create_at}</TextC>
-                        <TextC fontSize={16}>{item.update_at}</TextC>
+                        <TextC fontSize={16}>{getElaspedTime(item.update_at)}</TextC>
                       </CardC>
                     </TouchableOpacity>
                   ))
