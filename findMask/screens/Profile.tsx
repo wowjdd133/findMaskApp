@@ -1,11 +1,9 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import ProfileContainer from '../containers/Profile';
 
 const Profile = () => {
   return (
-    <View>
-      <Text>Profile screen</Text>
-    </View>
+    <ProfileContainer/>
   )
 }
 
