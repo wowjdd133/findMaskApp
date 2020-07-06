@@ -43,6 +43,17 @@ const Navigation = () => {
     )
   }
 
+  const ProfileStack = () => {
+    return (
+      <Stack.Navigator
+        headerMode="none"
+      >
+        <Stack.Screen name="Profile" component={screens.ProfileScreen}/>
+        <Stack.Screen name="EditProfile" component={screens.EditProfileScreen}/>
+      </Stack.Navigator>
+    )
+  }
+
   //board 장르 같은 것도 만들어야할듯?
   const BoardDrawer = () => {
     return (
@@ -102,7 +113,7 @@ const Navigation = () => {
           } />
         <BottomTab.Screen
           name="Profile"
-          component={screens.ProfileScreen}
+          component={ProfileStack}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Icons.ProfileIcon color={color} size={24} />
