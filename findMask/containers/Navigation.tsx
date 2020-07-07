@@ -48,8 +48,8 @@ const Navigation = () => {
       <Stack.Navigator
         headerMode="none"
       >
-        <Stack.Screen name="Profile" component={screens.ProfileScreen}/>
-        <Stack.Screen name="EditProfile" component={screens.EditProfileScreen}/>
+        <Stack.Screen name="Profile" component={screens.ProfileScreen} />
+        <Stack.Screen name="EditProfile" component={screens.EditProfileScreen} />
       </Stack.Navigator>
     )
   }
@@ -57,9 +57,11 @@ const Navigation = () => {
   //board 장르 같은 것도 만들어야할듯?
   const BoardDrawer = () => {
     return (
-      <Drawer.Navigator>
-        <Drawer.Screen name="Board" component={BoardStack} />
+      <Drawer.Navigator
+        drawerPosition='right'
+      >
         <Drawer.Screen name="Login" component={LoginStack} />
+        <Drawer.Screen name="Board" component={BoardStack} />
       </Drawer.Navigator>
     )
   }
@@ -70,7 +72,7 @@ const Navigation = () => {
         tabBarOptions={{
           activeTintColor: '#FFFFFF',
           labelStyle: { fontSize: 12 },
-          style: { 
+          style: {
             backgroundColor: '#cecece',
             height: 50,
           },

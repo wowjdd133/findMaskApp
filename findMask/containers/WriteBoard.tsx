@@ -9,6 +9,7 @@ import * as ImagePicker from 'expo-image-picker';
 import CardC from '../components/common/Card';
 import TextC from '../components/common/Text';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 
 interface selectType {
   image: string | null;
@@ -21,11 +22,13 @@ const WriteBoard = () => {
   const [writeBoard, { data }] = useMutation(WRITE_BOARD);
   const [selected, setSelected] = useState<selectType>({ image: null });
 
+  const Navigation = useNavigation();
 
   if (data) {
     if (data.writeBoard) {
       //보드 보기로 변경하자 보드 만들고
-      Alert.alert("성공", data.writeBoard);
+      Alert.alert("성공", "글쓰기 성공");
+      Navigation.navigate("Board");
     }
   }
 

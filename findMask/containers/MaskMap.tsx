@@ -1,22 +1,24 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import {StyleSheet, Text, Dimensions, Alert, Linking, Button} from 'react-native'
-import {LocationType} from './MaskLocation';
+import { StyleSheet, Text, Dimensions, Alert, Linking, Button, GestureResponderEvent } from 'react-native'
+import { LocationType } from './MaskLocation';
 // import MarkerList from './MarkerList';
 import { useQuery } from '@apollo/react-hooks'
 import Loading from '../components/Loading';
-import {View,SafeAreaView } from 'react-native';
-import MapView,{Marker, Callout} from 'react-native-maps';
-import {useNavigation } from '@react-navigation/native';
+import { View, SafeAreaView } from 'react-native';
+import MapView, { Marker, Callout, MapEvent } from 'react-native-maps';
+import { useNavigation } from '@react-navigation/native';
 import { MARKER_COLOR, REMAIN_STAT, LATITUDE_DELTA } from '../constants/MaskData';
-import {GET_MASK_DATA} from '../querys/Corona';
+import { GET_MASK_DATA } from '../querys/Corona';
+import ButtonC from '../components/common/Button';
+import Map from '../components/mask/Map';
 
 interface MaskInput {
   lat: number,
   lng: number,
   m: number,
 };
-export interface Stores {
+export interface Store {
   name: string,
   addr: string,
   lat: number,
@@ -26,104 +28,98 @@ export interface Stores {
   stock_at: string
 }
 export interface MaskData {
-  Masks:{
+  Masks: {
     count: number,
-    stores: [Stores]
+    stores: Store[],
   }
 }
 
+interface LinkingWebProps {
+  name: string;
+  coords: Coords;
+}
+
+interface Coords {
+  longitude: number;
+  latitude: number;
+}
+
+interface NavigateProps {
+  data: MaskData;
+  location: Coords;
+}
+
 //Text 컬러를 styled-components 적용해서 바꿔보자.
-const MaskMap = (props:LocationType) => {
+const MaskMap = (props: LocationType) => {
 
   const navigation = useNavigation();
 
-  console.log('maskMapComponent');
+  const handleLinkingWeb = (event: MapEvent<{ action: "callout-press"}>, props:LinkingWebProps):void => {
+    event.preventDefault();
+    Alert.alert("웹페이지 연결", "길찾기를 위해 웹페이지 'map.kakao.com'으로 연결합니다.", [
+      {
+        text: '예',
+        onPress: () => { Linking.openURL(`https://map.kakao.com/link/to/${props.name},${props.coords.latitude},${props.coords.longitude}`) }
+      },
+      {
+        text: '아니오',
+        onPress: () => { console.log('아뇨') }
+      }
+    ]);
+  }
 
-    if(props.coords){
-      const { data, loading, error} = useQuery<MaskData, MaskInput>(GET_MASK_DATA, {
-        variables: {
-            lat: props.coords.latitude,
-            lng: props.coords.longitude,
-            m: 5000
+  const handleNavigateWithData = (e:GestureResponderEvent,props:NavigateProps) => {
+    e.preventDefault();
+    navigation.navigate("List", {
+      data: {
+        data:props.data,
+        location: {
+          lat: props.location.latitude,
+          lng: props.location.longitude,
         }
-      });
-  
-      if(loading) {
-        return <Loading/>
       }
-    
-      if(error){
-        return <Text>error..</Text>
-      }
-  
-      if(data){
-        const { height, width } = Dimensions.get("window");
-        const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
+    });
+  }
 
-        return (
-          <SafeAreaView style={styles.container}>
-              <MapView
-                style={styles.mapStyle}
-                initialRegion={{
-                  latitude: props.coords.latitude,
-                  longitude: props.coords.longitude,
-                  latitudeDelta: LATITUDE_DELTA,
-                  longitudeDelta: LONGITUDE_DELTA
-                }}
-              >
-                  {data.Masks.stores.map((item:Stores) => {
-                    const color = MARKER_COLOR[item.remain_stat];
-                    const stat = REMAIN_STAT[item.remain_stat];
-  
-                    return(
-                      <Marker
-                        pinColor={color}
-                        key={item.code}
-                        coordinate={{latitude:item.lat, longitude:item.lng}}
-                      >
-                        <Callout onPress={() => {
-                          Alert.alert("웹페이지 연결","길찾기를 위해 웹페이지 'map.kakao.com'으로 연결합니다.",[
-                            {
-                              text: '예',
-                              onPress: () => {Linking.openURL(`https://map.kakao.com/link/to/${item.name},${props.coords.latitude},${props.coords.longitude}`)}
-                            },
-                            {
-                              text: '아니오',
-                              onPress: () => {console.log('아뇨')}
-                            }
-                          ])
-                        }}>
-                          <View style={styles.callout}>
-                            <Text style={styles.title}>{item.name}</Text>
-                            <Text style={styles.description}>{item.addr} {"\n"} {stat}</Text>
-                          </View>
-                        </Callout>
-                      </Marker>
-                    )
-                  })}
-              </MapView>
-            <View style={styles.showOnView}>
-                <Button
-                  onPress={() => {
-                    navigation.navigate("List",{
-                      data:{
-                        data,
-                        location: {
-                          lat: props.coords.latitude,
-                          lng: props.coords.longitude,
-                        }
-                      }
-                    });
-                  }}
-                  title="리스트"
-                />
-
-              </View>
-            </SafeAreaView>
-          )
+  if (props.coords) {
+    const { data, loading, error } = useQuery<MaskData, MaskInput>(GET_MASK_DATA, {
+      variables: {
+        lat: props.coords.latitude,
+        lng: props.coords.longitude,
+        m: 5000
       }
+    });
+
+    if (loading) {
+      return <Loading />
     }
-    
+
+    if (error) {
+      return <Text>error..</Text>
+    }
+
+    if (data) {
+      const { height, width } = Dimensions.get("window");
+      const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
+
+      return (
+        <Map
+          color={MARKER_COLOR}
+          data={data}
+          handleLinkingWeb={handleLinkingWeb}
+          handleNavigateWithData={handleNavigateWithData}
+          stat={REMAIN_STAT}
+          region={{
+            latitude: props.coords.latitude,
+            latitudeDelta: LATITUDE_DELTA,
+            longitude: props.coords.longitude,
+            longitudeDelta: LONGITUDE_DELTA
+          }}
+        />
+      )
+    }
+  }
+
   return <Text>hi</Text>
 }
 
@@ -139,7 +135,7 @@ const styles = StyleSheet.create({
   mapStyle: {
     flex: 1,
   },
-  callout:{
+  callout: {
     alignItems: 'center'
   },
   title: {
