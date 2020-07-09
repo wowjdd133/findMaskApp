@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, Text, Alert, TouchableOpacity, GestureResponderEvent, Image } from 'react-native';
 import { useRoute, RouteProp, useNavigation, useFocusEffect } from '@react-navigation/native';
-import { GET_BOARD, GET_BOARDS, UP_VIEWCOUNT } from '../querys/Board';
+import { GET_BOARD, GET_BOARDS, UP_VIEWCOUNT, DELETE_BOARD } from '../querys/Board';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import Loading from '../components/Loading';
 import CardC from '../components/common/Card';
@@ -11,14 +11,20 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import TextInputC from '../components/common/TextInput';
 import ButtonC from '../components/common/Button';
 import { WRITE_COMMENT, DELETE_COMMENT } from '../querys/Comment';
-import {getElaspedTime} from '../utils/MaskUtil';
+import { getElaspedTime } from '../utils/MaskUtil';
+import ListItem from '../components/ListItem';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import KeyboardAwareScrollViewComponent from '../components/common/KeyboardAwareScrollView';
+import Board from '../components/board/Board';
+import { ApolloError } from 'apollo-client';
+import { isLogin } from '../utils/loginUtil';
 
 interface BoardData {
   board: {
     id: string;
     title: string;
     uid: {
-      id: string;
+      email: string;
       name: string;
     }
     content: string;
@@ -44,7 +50,7 @@ interface BoardsData {
     id: string;
     title: string;
     uid: {
-      id: string;
+      email: string;
       name: string;
     }
     create_at: Date;
@@ -62,16 +68,32 @@ type RouteParamList = {
 
 type BoardRouteProps = RouteProp<RouteParamList, "data">
 
-const Board = () => {
+const BoardContainer = () => {
 
   const route = useRoute<BoardRouteProps>();
   const navigation = useNavigation();
 
   const [upViewCount, { data: ViewCountData }] = useMutation(UP_VIEWCOUNT);
 
-  const [writeComment, { data: writeCommentData, loading: writeCommentLoading, error: writeCommentError }] = useMutation(WRITE_COMMENT);
+  const [writeComment, { data: writeCommentData, loading: writeCommentLoading, error: writeCommentError }] = useMutation(WRITE_COMMENT, {
+    refetchQueries: [{
+      query: GET_BOARD, variables: {
+        id: route.params.id
+      }
+    }],
+    awaitRefetchQueries: true,
+  });
 
-  const [deleteComment, { data: deleteCommentData, loading : deleteCommentLoading, error: deleteCommentError}] = useMutation(DELETE_COMMENT);
+  const [deleteComment, { data: deleteCommentData, loading: deleteCommentLoading, error: deleteCommentError }] = useMutation(DELETE_COMMENT, {
+    refetchQueries: [{
+      query: GET_BOARD, variables: {
+        id: route.params.id
+      }
+    }],
+    awaitRefetchQueries: true,
+  });
+
+  const [deleteBoard] = useMutation(DELETE_BOARD);
 
   React.useEffect(() => {
     upViewCount({
@@ -80,22 +102,112 @@ const Board = () => {
       }
     });
   }, []);
-  
+
+  useFocusEffect(
+    React.useCallback(() => {
+      try{
+        refetch();
+      }catch(err){}
+    },[])
+  );
+
   const { data, loading, error, refetch, networkStatus } = useQuery<BoardData>(GET_BOARD, {
     variables: {
       id: route.params.id
     },
-    fetchPolicy:'no-cache',
     notifyOnNetworkStatusChange: true
   });
-
-  if (networkStatus == 4) {
-    console.log('실패')
-  }
-
-  const { data: listData, loading: listLoading, error: listError } = useQuery<BoardsData>(GET_BOARDS)
+  
+  const { data: listData, loading: listLoading, error: listError } = useQuery<BoardsData>(GET_BOARDS,{
+    variables: {
+      offset: 0,
+      limit: 10
+    }
+  })
 
   const [comment, setComment] = React.useState('');
+
+  const handleWriteComment = async (e: GestureResponderEvent): Promise<void> => {
+    console.warn(route.params.id);
+    e.preventDefault();
+    try {
+      const boardId = await writeComment({
+        variables: {
+          bid: data!.board.id,
+          content: comment
+        }
+      });
+
+      if (!boardId.data.writeComment) {
+        throw new Error("다시 로그인해주세요");
+      }
+      Alert.alert("댓글쓰기 성공");
+    } catch (err) {
+      Alert.alert("댓글쓰기 실패", err.message)
+      console.log(err);
+    }
+  }
+
+  const handleNavigateBoard = (e: GestureResponderEvent, id: string) => {
+    navigation.navigate("Board", {
+      id: id
+    });
+  }
+
+  const handleDeleteBoard = async (id: string): Promise<void> => {
+    if(isLogin()){
+      try {
+        await deleteBoard({
+          variables: {
+            id: id
+          }
+        })
+        Alert.alert("성공")
+      } catch{
+        Alert.alert("실패", "다시 시도해주세요");
+      }
+  
+      navigation.goBack();
+    } else {
+      Alert.alert("실패","로그인해주세요");
+    }
+  }
+
+  const handleEditBoard = (e: GestureResponderEvent) => {
+    e.preventDefault();
+    if(isLogin()){
+      navigation.navigate("EditBoard", {
+        board: {
+          id: data!.board.id,
+          title: data!.board.title,
+          content: data!.board.content,
+          getBoard: GET_BOARD,
+        }
+      });
+    } else {
+      Alert.alert("실패","로그인해주세요");
+    }
+    
+  }
+
+  const handleRemoveComment = async (e: GestureResponderEvent, id: string): Promise<void> => {
+    e.preventDefault();
+    if(isLogin()){
+      try {
+        await deleteComment({
+          variables: {
+            id: id
+          }
+        });
+        Alert.alert("성공");
+      } catch (err) {
+        Alert.alert("실패")
+      }
+    }
+    else {
+      Alert.alert("실패","로그인해주세요");
+    }
+  }
 
   if (loading) {
     return (<Loading />)
@@ -107,138 +219,19 @@ const Board = () => {
 
   if (data) {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView>
-          <CardC flex={1}>
-            <CardC
-              height="100px"
-              borderBottom={1}
-              borderBottomColor="#ced4da">
-              <TextC
-                fontSize={32}
-              >{data.board.title}</TextC>
-              <TextC
-                fontSize={16}
-              >{data.board.uid.name}</TextC>
-              <TextC
-                fontSize={16}
-              >
-                {data.board.viewCount}
-              </TextC>
-            </CardC>
-            <CardC flex={1}
-              minHeight="300px"
-              borderBottom={1}
-              borderBottomColor="#ced4da">
-              <CardC flex={1}>
-                {data.board.image && (<Image
-                  source={{uri: data.board.image}}
-                  style={{width: '100%', height: 200, resizeMode:'contain'}}
-                />)}
-                <TextC
-                  fontSize={24}
-                >{data.board.content}</TextC>
-              </CardC>
-            </CardC>
-          </CardC>
-          <CardC
-            flex={1}
-            borderBottom={1}
-            borderBottomColor="#ced4da">
-            <CardC
-              flex={1}
-              row>
-              <TextInputC
-                placeholder="댓글쓰기"
-                setValue={setComment}
-                value={comment}
-                height="100px"
-              />
-              <ButtonC
-                stretch
-                backgroundColor="#eeeeee"
-                color="#ffffff"
-                width="20%"
-                onPress={async (event: GestureResponderEvent) => {
-                  event.preventDefault();
-                  try {
-                    await writeComment({
-                      variables: {
-                        bid: data.board.id,
-                        content: comment
-                      }
-                    });
-                    refetch();
-                    Alert.alert("글쓰기 성공");
-                  } catch (err) {
-                    Alert.alert("글쓰기 실패", err.message)
-                    console.log(err);
-                  }
-                }}
-                title="댓글 등록"
-              />
-            </CardC>
-            {data.board.comments && data.board.comments.length > 0 ? data.board.comments.map((item) => {
-              console.log(item);
-              return (
-                <CardC flex={1} row borderBottom={1} borderBottomColor="#e3e3e3" key={item.id}>
-                  <TextC fontSize={16}>{item.content} </TextC>
-                  <TextC fontSize={16}>{item.author.name} </TextC>
-                  <TextC fontSize={16}>{getElaspedTime(item.update_at)} </TextC>
-                  <ButtonC
-                    backgroundColor="#eeeeee"
-                    color="#ffffff"
-                    onPress={async() => {
-                      try{
-                        await deleteComment({
-                          variables:{
-                            id: item.id
-                          }
-                        });
-                        refetch();
-                        Alert.alert("성공");
-                      } catch(err){
-                        console.log(err);
-                        Alert.alert("실패")
-                      }
-                    }}
-                    title="삭제"
-                  />
-                </CardC>
-              )
-            }) : <CardC>
-              <TextC fontSize={24}>댓글이 없습니다.</TextC>
-              </CardC>}
-          </CardC>
-          <CardC>
-            {
-              listLoading ? (
-                <Loading />
-              ) : (
-                  listData!.boards.map((item) => (
-                    <TouchableOpacity
-                      onPress={(event: GestureResponderEvent) => {
-                        navigation.navigate("Board", {
-                          id: item.id
-                        });
-                      }}
-                      style={{ flex: 1, alignSelf: 'stretch' }}
-                      key={item.id}>
-                      <CardC borderBottom={1}
-                        borderBottomColor="#ced4da">
-                        <TextC fontSize={32}>{item.title}</TextC>
-                        <TextC fontSize={16}>{item.viewCount}</TextC>
-                        <TextC fontSize={16}>{item.uid.name}</TextC>
-                        <TextC fontSize={16}>{getElaspedTime(item.update_at)}</TextC>
-                      </CardC>
-                    </TouchableOpacity>
-                  ))
-                )
-            }
-          </CardC>
-        </ScrollView>
-      </SafeAreaView>
-
+      <Board
+        board={data.board}
+        boards={listData!.boards}
+        comment={comment}
+        getElaspedTime={getElaspedTime}
+        handleNavigateBoard={handleNavigateBoard}
+        handleRemoveComment={handleRemoveComment}
+        handleWriteComment={handleWriteComment}
+        listLoading={listLoading}
+        setComment={setComment}
+        handleEditBoard={handleEditBoard}
+        handleDeleteBoard={handleDeleteBoard}
+      />
     )
   }
 
@@ -246,4 +239,4 @@ const Board = () => {
 
 }
 
-export default Board;
+export default BoardContainer;
