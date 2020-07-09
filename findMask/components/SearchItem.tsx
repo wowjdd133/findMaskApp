@@ -7,8 +7,6 @@ import { MARKER_COLOR, REMAIN_STAT } from '../constants/MaskData';
 
 const StoreItem = ((item:Store) => {
 
-  console.log('StoreItem');
-
   return(
     <TouchableOpacity style={styles.item}>
       <Text style={styles.name}>{item.name}</Text>

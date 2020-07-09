@@ -15,6 +15,7 @@ const ListItem = ({onPress, children}: ListItemProp) => {
       style={{ flex:1, alignSelf: 'stretch' }}
     >
       <CardC 
+        row
         borderBottom={1}
         borderBottomColor="#ced4da">
         {children}

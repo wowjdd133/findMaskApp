@@ -14,17 +14,18 @@ interface ProfileProp {
     phoneNumber: string;
     create_at: Date;
     permission: string;
-    image: string;
+    image?: string;
   };
   handleOnPress: (e:GestureResponderEvent) => void;
 }
 
 const Profile = ({user,handleOnPress}:ProfileProp) => {
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <CardC flex={1}>
         <CardC flex={1} backgroundColor="#eeeeee">
-          {user.image ? <Image
+          {user.image !== null ? <Image
             source={{uri:user.image}}
             style={{ width: 150, height: 150, borderRadius: 75, resizeMode:'cover'}}
           />:<View

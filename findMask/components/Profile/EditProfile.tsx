@@ -6,6 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import TextInputC from '../common/TextInput';
 import ButtonC from '../common/Button';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import KeyboardAwareScrollViewComponent from '../common/KeyboardAwareScrollView';
 
 interface EditProfileProp {
   name: string;
@@ -31,19 +32,13 @@ const EditProfile = (props: EditProfileProp) => {
     setName,
     setEmail,
     setPhoneNumber,
-    setSelected,
     handlePickImage,
     handleEditProfile
   } = props;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <KeyboardAwareScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ flexGrow: 1 }}
-        scrollEnabled={true}
-        resetScrollToCoords={{ x: 0, y: 0 }}
-      >
+      <KeyboardAwareScrollViewComponent>
         <CardC flex={0.5}>
           <CardC flex={1} backgroundColor="gray">
             {
@@ -92,7 +87,7 @@ const EditProfile = (props: EditProfileProp) => {
             color="#ffffff"
           />
         </CardC>
-      </KeyboardAwareScrollView>
+      </KeyboardAwareScrollViewComponent>
     </SafeAreaView>
   )
 }

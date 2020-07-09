@@ -8,6 +8,7 @@ import CardC from "../common/Card";
 import TextC from "../common/Text";
 import TextInputC from "../common/TextInput";
 import { GestureResponderEvent } from "react-native";
+import KeyboardAwareScrollViewComponent from '../common/KeyboardAwareScrollView';
 
 interface RegisterProps {
   name: string;
@@ -43,12 +44,7 @@ const Register = (props:RegisterProps) => {
 
 return (
   <SafeAreaView style={{ flex: 1, backgroundColor: "#cccccc" }}>
-    <KeyboardAwareScrollView
-      keyboardShouldPersistTaps="always"
-      contentContainerStyle={{ flexGrow: 1 }}
-      scrollEnabled
-      resetScrollToCoords={{ x: 0, y: 0 }}
-    >
+    <KeyboardAwareScrollViewComponent>
       <TopComponent
         paddingLeft={30}
         onPress={handleGoBack}
@@ -115,7 +111,7 @@ return (
           maxLength={12}
         />
       </CardC>
-    </KeyboardAwareScrollView>
+    </KeyboardAwareScrollViewComponent>
   </SafeAreaView>
 )
 }
