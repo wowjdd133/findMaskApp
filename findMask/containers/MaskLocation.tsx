@@ -71,8 +71,6 @@ const MaskLocation = () => {
     })
   },[]);
 
-  console.log('maskMapContainer');
-
   return (
     <View style={styles.container}>
       {loading ? <Loading/> :<MapContent coords={location.coords}/>}

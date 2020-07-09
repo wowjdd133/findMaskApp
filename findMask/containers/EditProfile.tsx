@@ -1,16 +1,10 @@
 import * as React from 'react';
-import CardC from '../components/common/Card';
-import TextC from '../components/common/Text';
 import { useMutation } from '@apollo/react-hooks';
 import { EDIT_PROFILE } from '../querys/User';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
-import { View, Platform, Image, Alert, GestureResponderEvent } from 'react-native';
-import ButtonC from '../components/common/Button';
-import TextInputC from '../components/common/TextInput';
+import { Platform, Alert, GestureResponderEvent } from 'react-native';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import EditProfile from '../components/Profile/EditProfile';
 
 type RouteStackParamList = {

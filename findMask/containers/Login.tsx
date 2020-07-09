@@ -3,15 +3,7 @@ import { GestureResponderEvent, Alert, AsyncStorage, ToastAndroid, Platform } fr
 import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@apollo/react-hooks';
 import { LOGIN } from '../querys/User';
-import Card from '../components/common/Card';
-import Text from '../components/common/Text';
-import TextInput from '../components/common/TextInput';
-import Button from '../components/common/Button';
-import Close from '../svgs/Close';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { isEmail } from '../utils/loginUtil';
-import ButtonC from '../components/common/Button';
-import TopComponent from '../components/common/TopComponent';
 import Login from '../components/login';
 
 //뒤로가기 헤더에 놔두기
