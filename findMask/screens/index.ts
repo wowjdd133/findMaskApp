@@ -9,6 +9,7 @@ import LoginScreen from './Login'
 import RegisterScreen from './Register';
 import WriteBoardScreen from './WriteBoard';
 import EditProfileScreen from './EditrProfile';
+import EditBoardScreen from './EditBoard';
 
 export const screens = {
   BoardScreen,
@@ -21,5 +22,6 @@ export const screens = {
   RegisterScreen,
   BoardListScreen,
   WriteBoardScreen,
-  EditProfileScreen
+  EditProfileScreen,
+  EditBoardScreen
 };
