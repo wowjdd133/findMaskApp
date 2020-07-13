@@ -20,6 +20,10 @@ interface BoardListProps {
     boards: Board[];
   },
   getElaspedTime: (time: string | Date) => string;
+  onEndReached?: (info: {
+    distanceFromEnd: number;
+  }) => void | null | undefined;
+  refreshing?: boolean;
 }
 
 const BoardList = (props: BoardListProps) => {
@@ -32,7 +36,9 @@ const BoardList = (props: BoardListProps) => {
     handleNavigateWrite,
     token,
     getElaspedTime,
-    handleOpenDrawer
+    handleOpenDrawer,
+    onEndReached,
+    refreshing
   } = props;
 
   return (
@@ -70,6 +76,8 @@ const BoardList = (props: BoardListProps) => {
         boards={data.boards}
         getElaspedTime={getElaspedTime}
         handleNavigateBoard={handleNavigateBoard}
+        onEndReached={onEndReached}
+        refreshing={refreshing}
       />
     </SafeAreaView>
   )

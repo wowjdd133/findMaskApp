@@ -31,15 +31,18 @@ export interface Board {
   viewCount: number;
 }
 
+interface OnReachedInfo {
+  distanceFromEnd: number;
+}
+
 const BoardListContainer = () => {
   //다시 돌아오면 업데이트 해야함.
   const navigation = useNavigation();
   const [token, setToken] = React.useState('');
-  const { data, loading, error, refetch, networkStatus, fetchMore } = useQuery<BoardsData>(GET_BOARDS, {
-    notifyOnNetworkStatusChange: true,
+  const { data, loading, error, refetch, fetchMore } = useQuery<BoardsData>(GET_BOARDS, {
     variables: {
-      offset: 2,
-      limit: 10
+      offset: 0,
+      limit: 20
     }
   });
 
@@ -99,7 +102,24 @@ const BoardListContainer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
   }
 
-  if (loading || networkStatus === 4) {
+  const handleEndReached = ({distanceFromEnd}:OnReachedInfo):void => {
+    console.log(distanceFromEnd);
+    try{
+      fetchMore({
+        variables:{
+          offset: data!.boards.length
+        },
+        updateQuery: (prev, { fetchMoreResult}) => {
+          if(!fetchMoreResult) return prev;
+          return Object.assign({}, prev, {
+            boards: [...prev.boards, ...fetchMoreResult.boards]
+          });
+        }
+      })
+    }catch(err){}
+  }
+
+  if (loading) {
     return (<Loading />);
   }
 
@@ -116,6 +136,7 @@ const BoardListContainer = () => {
         handleNavigateWrite={handleNavigateWrite}
         handleOpenDrawer={handleOpenDrawer}
         token={token}
+        onEndReached={handleEndReached}
       />
     )
   }

@@ -6,6 +6,6 @@ import { StoreClass } from "./Store";
 export default class MaskObject{
   @Field(() => Number)
   count:number;
-  @Field(() => [StoreClass])
-  stores:Store[];
+  @Field(() => [StoreClass],{nullable:true})
+  stores?:Store[];
 }

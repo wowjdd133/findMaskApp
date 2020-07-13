@@ -66,6 +66,10 @@ type RouteParamList = {
   }
 }
 
+interface OnReachedInfo {
+  distanceFromEnd: number;
+}
+
 type BoardRouteProps = RouteProp<RouteParamList, "data">
 
 const BoardContainer = () => {
@@ -118,14 +122,32 @@ const BoardContainer = () => {
     notifyOnNetworkStatusChange: true
   });
   
-  const { data: listData, loading: listLoading, error: listError } = useQuery<BoardsData>(GET_BOARDS,{
+  const { data: listData, loading: listLoading, fetchMore,networkStatus: listNetworkStatus, error: listError } = useQuery<BoardsData>(GET_BOARDS,{
     variables: {
       offset: 0,
-      limit: 10
-    }
+      limit: 20
+    },
+    notifyOnNetworkStatusChange: true,
   })
 
   const [comment, setComment] = React.useState('');
+
+  const handleEndReached = ({distanceFromEnd}:OnReachedInfo):void => {
+    console.log(distanceFromEnd);
+    try{
+      fetchMore({
+        variables:{
+          offset: listData!.boards.length
+        },
+        updateQuery: (prev, { fetchMoreResult}) => {
+          if(!fetchMoreResult) return prev;
+          return Object.assign({}, prev, {
+            boards: [...prev.boards, ...fetchMoreResult.boards]
+          });
+        }
+      })
+    }catch(err){}
+  }
 
   const handleWriteComment = async (e: GestureResponderEvent): Promise<void> => {
     console.warn(route.params.id);
@@ -217,7 +239,7 @@ const BoardContainer = () => {
     Alert.alert("에러", error.message);
   }
 
-  if (data) {
+  if (data && listData) {
     return (
       <Board
         board={data.board}
@@ -231,11 +253,13 @@ const BoardContainer = () => {
         setComment={setComment}
         handleEditBoard={handleEditBoard}
         handleDeleteBoard={handleDeleteBoard}
+        onEndReached={handleEndReached}
+        refreshing={networkStatus === 4}
       />
     )
   }
 
-  return <Text>hi</Text>
+  return <Text>잘 못된 board입니다.</Text>
 
 }
 

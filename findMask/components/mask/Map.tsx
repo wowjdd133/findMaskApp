@@ -95,11 +95,11 @@ const MapComponent = (props: MapProps) => {
         style={{ flex: 1 }}
         initialRegion={props.region}
       >
-        <MarkerList
+        {props.data.Masks && <MarkerList
           stores={props.data.Masks.stores}
           color={props.color}
           stat={props.stat}
-        />
+        />}
       </MapView>
       <View style={{ position: "absolute", bottom: "0%", alignSelf: 'flex-end' }}>
         <ButtonC

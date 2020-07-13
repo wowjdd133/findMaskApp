@@ -70,6 +70,10 @@ interface BoardProps {
   handleRemoveComment: (event: GestureResponderEvent, id: string) => Promise<void>;
   handleEditBoard: (event: GestureResponderEvent) => void;
   handleDeleteBoard: (id: string) => Promise<void>;
+  onEndReached?: (info: {
+    distanceFromEnd: number;
+  }) => void | null | undefined;
+  refreshing?: boolean;
 }
 
 const Board = (props: BoardProps) => {
@@ -85,7 +89,9 @@ const Board = (props: BoardProps) => {
     setComment,
     getElaspedTime,
     handleEditBoard,
-    handleDeleteBoard
+    handleDeleteBoard,
+    onEndReached,
+    refreshing
   } = props;
 
   return (
@@ -173,6 +179,8 @@ const Board = (props: BoardProps) => {
               boards={boards}
               getElaspedTime={getElaspedTime}
               handleNavigateBoard={handleNavigateBoard}
+              onEndReached={onEndReached}
+              refreshing={refreshing}
             />
           )
       }

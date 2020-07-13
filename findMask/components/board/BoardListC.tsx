@@ -4,14 +4,19 @@ import CardC from '../common/Card';
 import ListItem from '../ListItem';
 import TextC from '../common/Text';
 import { Board } from '../../containers/BoardList';
-import { GestureResponderEvent } from 'react-native';
+import { GestureResponderEvent, ActivityIndicator } from 'react-native';
 import BoardListItem from './BoardListItem';
+import Loading from '../Loading';
 
 interface BoardListCProps {
   boards: Board[];
   handleNavigateBoard: (e: GestureResponderEvent, id: string) => void;
   getElaspedTime: (time: string | Date) => string;
   ListHeaderComponent?: React.ReactNode;
+  onEndReached?: ((info: {
+    distanceFromEnd: number;
+  }) => void) | null | undefined;
+  refreshing?: boolean;
 }
 
 const BoardListC = (props: BoardListCProps) => {
@@ -20,11 +25,13 @@ const BoardListC = (props: BoardListCProps) => {
     boards,
     handleNavigateBoard,
     getElaspedTime,
-    ListHeaderComponent
+    ListHeaderComponent,
+    onEndReached,
+    refreshing
   } = props;
 
   return (
-    <CardC flex={1}>
+    <CardC flex={1} height="100%">
       <FlatList
         ListHeaderComponent={
           <>
@@ -34,6 +41,9 @@ const BoardListC = (props: BoardListCProps) => {
         style={{ backgroundColor: '#eeeeee', alignSelf: "stretch" }}
         keyExtractor={item => item.id}
         data={boards}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={1}
+        refreshing={refreshing}
         renderItem={({ item }) => {
           return (
             <BoardListItem
@@ -43,6 +53,10 @@ const BoardListC = (props: BoardListCProps) => {
             />
           )
         }}
+        ListFooterComponent={() => (
+          <Loading/>
+        )
+        }
       />
     </CardC>
   )
