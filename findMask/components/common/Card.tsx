@@ -15,12 +15,15 @@ interface CardStyleProps {
   backgroundColor?: string,
   paddingLeft?: number,
   paddingRight?: number,
-  justifyContent?: 'space-around' | 'center' | 'space-between',
+  justifyContent?: 'space-around' | 'center' | 'space-between' | 'space-evenly' | 'flex-end',
   row?: boolean,
   flex?: number,
   height?: string,
   borderBottom?: number,
   borderBottomColor?: string,
+  minHeight?: string,
+  marginRight?: number,
+  paddingBottom?: number,
 }
 
 const Card = styled.View`
@@ -32,12 +35,17 @@ const Card = styled.View`
     props.height ? `height: ${props.height};` : ''
   }
   ${(props: CardStyleProps) => 
+    props.minHeight ? `minHeight: ${props.minHeight};` : ''
+  }
+  ${(props: CardStyleProps) => 
     props.borderBottomColor ? `borderBottomColor: ${props.borderBottomColor};` : ''
   }
   ${(props: CardStyleProps) => 
     props.borderBottom ? `borderBottomWidth: ${props.borderBottom}px;` : ''
   }
   marginTop: ${(props: CardStyleProps) => props.marginTop}px;
+  marginRight: ${(props: CardStyleProps) => props.marginRight}px;
+  paddingBottom: ${(props: CardStyleProps) => props.paddingBottom}px;
   paddingLeft: ${(props: CardStyleProps) => props.paddingLeft}px;
   paddingRight: ${(props: CardStyleProps) => props.paddingRight}px;
   backgroundColor: ${(props: CardStyleProps) => props.backgroundColor};
@@ -57,7 +65,9 @@ const TouchableCard = styled.TouchableOpacity`
   ${(props: CardStyleProps) => 
     props.borderBottom ? `borderBottomWidth: ${props.borderBottom}px;` : ''
   }
+  marginRight: ${(props: CardStyleProps) => props.marginRight}px;
   marginTop: ${(props: CardStyleProps) => props.marginTop}px;
+  paddingBottom: ${(props: CardStyleProps) => props.paddingBottom}px;
   paddingLeft: ${(props: CardStyleProps) => props.paddingLeft}px;
   paddingRight: ${(props: CardStyleProps) => props.paddingRight}px;
   backgroundColor: ${(props: CardStyleProps) => props.backgroundColor};
@@ -84,6 +94,9 @@ const CardC = ({
   height,
   borderBottom,
   borderBottomColor,
+  minHeight,
+  marginRight = 0,
+  paddingBottom = 0,
 }: CardProps) => {
 
   const CardProps = {
@@ -98,8 +111,11 @@ const CardC = ({
     flex,
     height,
     borderBottom,
-    borderBottomColor
-  }
+    borderBottomColor,
+    minHeight,
+    paddingBottom,
+    marginRight
+  };
 
   return (
     touchable ?

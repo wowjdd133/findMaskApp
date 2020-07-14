@@ -13,6 +13,8 @@ interface TextInputType extends TextInputStyleType {
   keyboardType?: 'default' | 'number-pad' | 'decimal-pad' | 'numeric' | 'email-address' | 'phone-pad' | 'ascii-capable' | 'numbers-and-punctuation' | 'url' | 'name-phone-pad' | 'visible-password' | 'twitter' | 'web-search';
   multiline?: boolean,
   numOfLines?: number,
+  InputAccessoryViewID?: string,
+  returnKeyType?: 'done' | 'go' | 'next' | 'search' | 'send' | 'none' | 'previous' | 'default' | 'emergency-call' | 'google' | 'join' | 'route' | 'yahoo';
 }
 
 interface TextInputStyleType {
@@ -37,7 +39,7 @@ const TextInput = styled.TextInput`
 
 const TextInputC = ({
   height = "30px",
-  width = "100%",
+  width = "80%",
   onChangeText,
   value,
   setValue,
@@ -50,6 +52,8 @@ const TextInputC = ({
   onEndEditing,
   multiline,
   numOfLines,
+  InputAccessoryViewID,
+  returnKeyType,
 }: TextInputType) => {
 
   if (!onChangeText) {
@@ -73,19 +77,20 @@ const TextInputC = ({
     multiline,
     numOfLines,
     width,
+    InputAccessoryViewID,
+    returnKeyType,
   }
 
   return (
     isPassword ?
-      <TextInput
-        blurOnSubmit={false}
+      (<TextInput
         secureTextEntry={true}
         {...textInputProps}
-      /> : <TextInput
-        blurOnSubmit={false}
-        {...textInputProps}
-      />
-
+      />) : (
+        <TextInput
+          {...textInputProps}
+        />
+      )
   )
 }
 

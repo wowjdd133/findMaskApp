@@ -7,15 +7,17 @@ interface ButtonProps extends ViewStyleProps {
   title: string;
   onPress: (event: GestureResponderEvent) => void;
   disabled?: boolean;
+  multiline?: boolean;
 }
 
 interface ViewStyleProps {
   marginTop?: number;
   width?: string;
   stretch?: boolean;
-  color?: string;
+  color: string;
   backgroundColor: string;
   around?: boolean;
+  align?: 'center' | 'flex-end' | 'flex-start';
 }
 
 const ViewStyle = styled.TouchableOpacity`
@@ -30,20 +32,19 @@ const ViewStyle = styled.TouchableOpacity`
     props.width ? `width: ${props.width};` : ''
   }
   ${(props: ViewStyleProps) =>
-    props.stretch ? 'alignSelf: stretch;' : 'alignSelf: center;'
+    props.stretch ? 'alignSelf: stretch;' : `alignSelf: ${props.align ? props.align : 'center'};`
   }
-  color: ${(props: ViewStyleProps) => props.color}
   backgroundColor: ${(props: ViewStyleProps) => props.backgroundColor};
   alignItems: center;
   justifyContent: center;
 `
 
-const ButtonC = ({title,disabled,...props}: ButtonProps) => {
+const ButtonC = ({multiline = false,title,disabled,...props}: ButtonProps) => {
   return (
     <ViewStyle
       {...props}
       >
-        <TextC fontSize={24}>
+        <TextC multiline fontSize={24} color={props.color}>
           {title}
         </TextC>
     </ViewStyle>

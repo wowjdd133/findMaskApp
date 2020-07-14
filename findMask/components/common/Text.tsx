@@ -10,6 +10,7 @@ interface TextStyleProps {
   color?: string;
   align?: 'flex-start' | 'center' | 'flex-end';
   marginTop?: number,
+  multiline?: boolean
 }
 
 const TextStyle = styled.Text`
@@ -25,9 +26,10 @@ const TextC = ({
   color = "#000000",
   align = 'center',
   marginTop = 0,
+  multiline = false,
 }:TextProps) => {
   return (
-    <TextStyle fontSize={fontSize} color={color} align={align} marginTop={marginTop}>
+    <TextStyle numberOfLines={!multiline ? 1 : undefined} fontSize={fontSize} color={color} align={align} marginTop={marginTop}>
       {children}
     </TextStyle>
   )
