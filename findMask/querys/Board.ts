@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export const GET_BOARDS = gql`
-  query {
-    boards {
+  query getBoards($offset: Float, $limit: Float){
+    boards(offset: $offset, limit: $limit) {
       id
       viewCount
       title
@@ -58,13 +58,13 @@ export const UP_VIEWCOUNT = gql`
 `
 
 export const UPDATE_BOARD = gql`
-  mutation updateBoard($title: String!, $content: String!, $id: ID!) {
+  mutation updateBoard($title: String!, $content: String!, $id: String!) {
     updateBoard(title: $title, content: $content, id: $id)
   }
 `;
 
 export const DELETE_BOARD = gql`
-  mutation deleteBoard($id: ID!) {
+  mutation deleteBoard($id: String!) {
     deleteBoard(id: $id)
   }
 `;

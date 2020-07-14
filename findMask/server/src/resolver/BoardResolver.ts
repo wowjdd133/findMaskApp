@@ -8,8 +8,21 @@ import { ApolloError } from "apollo-server-express";
 export class BoardResolver {
 
   @Query((returns) => [Board])
-  async boards() {
-    return await Board.find();
+  async boards(
+    @Arg("offset",{nullable:true}) offset?: number,
+    @Arg("limit",{nullable:true}) limit?: number,
+    ) {
+      console.log(offset,limit);
+      try{
+        return await Board.find({order:{
+          create_at: 'DESC'
+        },
+        skip: offset,
+        take: limit,
+        });
+      }catch(err){
+        console.log(err);
+      }
   }
 
   @Query((retruns) => Board)
@@ -129,8 +142,7 @@ export class BoardResolver {
 
       return board.id;
     } catch (err) {
-      console.error(err);
-      return null;
+      throw new ApolloError(err);
     }
   }
 }
