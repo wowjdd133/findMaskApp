@@ -57,7 +57,7 @@ const Login = (props: LoginProps) => {
           <TextInputC
             marginTop={40}
             keyboardType="email-address"
-            maxLength={25}
+            maxLength={20}
             height="45px"
             setValue={setEmail}
             value={email}
@@ -66,7 +66,7 @@ const Login = (props: LoginProps) => {
           <TextInputC
             marginTop={40}
             height="45px"
-            maxLength={15}
+            maxLength={20}
             setValue={setPassword}
             value={password}
             onChangeText={handleChangeText}

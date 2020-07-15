@@ -64,6 +64,7 @@ const EditProfile = (props: EditProfileProp) => {
           <TextInputC
             marginTop={40}
             placeholder="이름"
+            maxLength={12}
             value={name}
             setValue={setName}
           ></TextInputC>
@@ -71,11 +72,13 @@ const EditProfile = (props: EditProfileProp) => {
             marginTop={48}
             placeholder="이메일"
             value={email}
+            maxLength={20}
             setValue={setEmail}
           ></TextInputC>
           <TextInputC
             placeholder="폰번호"
             marginTop={48}
+            maxLength={11}
             value={phoneNumber}
             setValue={setPhoneNumber}
           ></TextInputC>

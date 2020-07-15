@@ -29,11 +29,13 @@ const EditBoard = (props:EditBoardProps) => {
           <TextInputC
             height="45px"
             placeholder="title"
+            maxLength={20}
             setValue={props.setTitle}
             value={props.title}
           />
           <TextInputC
             marginTop={20}
+            maxLength={400}
             height="80%"
             placeholder="content"
             value={props.content}
