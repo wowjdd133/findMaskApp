@@ -5,7 +5,7 @@ moment.tz.setDefault("Asia/Seoul");
 
 export const getElaspedTime = (time:string | Date) => {
   
-  let now = moment()
+  let now = moment();
 
   let timeValue;
 
@@ -14,14 +14,14 @@ export const getElaspedTime = (time:string | Date) => {
       (time || "").replace(/-/g, "/").replace(/[TZ]/g, " ").split(".")[0], "YYYY/MM/DD HH:mm:ss"
     );
   } else {
-    timeValue = moment(time);
+    timeValue = moment(time)
   }
   
   const min = 60;
   //date.getTime() -> msec. so /1000
   let elaspedTime = now.diff(timeValue, 'seconds');
 
-  let result = "알 수 없음";
+  let result = "몇초 전";
 
   if (elaspedTime < min) return result;
   else if (elaspedTime < min * 60)

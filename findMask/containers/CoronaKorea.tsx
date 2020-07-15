@@ -2,14 +2,14 @@ import * as React from 'react';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import Loading from '../components/Loading';
-import { Text, View, StyleSheet, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import KoreaIcon from '../svgs/Korea';
 import PieChart from '../components/PieChart';
 import BarChart from '../components/BarChart';
 import { GET_CORONA_KOREA_DATA } from '../querys/Corona'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-interface CityType {
+export interface CityType {
   countryName: string;
   newCase: string | number;
   totalCase: string;
@@ -55,6 +55,10 @@ export interface CoronaKoreaData {
 }
 
 const CoronaKorea = () => {
+
+  console.log(Dimensions.get("screen").width);
+  console.log('hi');
+
   const { loading, error, data } = useQuery<CoronaKoreaData>(
     GET_CORONA_KOREA_DATA
   );
@@ -130,7 +134,7 @@ const CoronaKorea = () => {
           <View style={styles.dataBox}>
             <BarChart
               labels={["오늘 사망자", "오늘 격리해제", "오늘 확진자"]}
-              data={[parseInt(coronaData.TodayDeath), parseInt(coronaData.TodayRecovered), parseInt(koreaData.newCase)]}
+              data={[parseInt(coronaData.TodayDeath), parseInt(coronaData.TodayRecovered), parseInt(koreaData!.newCase)]}
             />
           </View>
           <View style={styles.dataBox}>

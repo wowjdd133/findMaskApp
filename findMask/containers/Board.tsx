@@ -254,7 +254,6 @@ const BoardContainer = () => {
         handleEditBoard={handleEditBoard}
         handleDeleteBoard={handleDeleteBoard}
         onEndReached={handleEndReached}
-        refreshing={networkStatus === 4}
       />
     )
   }

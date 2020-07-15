@@ -1,16 +1,13 @@
 import React from 'react';
-import gql from 'graphql-tag';
-import { StyleSheet, Text, Dimensions, Alert, Linking, Button, GestureResponderEvent } from 'react-native'
+import { StyleSheet, Text, Dimensions, Alert, Linking, GestureResponderEvent } from 'react-native'
 import { LocationType } from './MaskLocation';
 // import MarkerList from './MarkerList';
 import { useQuery } from '@apollo/react-hooks'
 import Loading from '../components/Loading';
-import { View, SafeAreaView } from 'react-native';
-import MapView, { Marker, Callout, MapEvent } from 'react-native-maps';
+import {MapEvent } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
 import { MARKER_COLOR, REMAIN_STAT, LATITUDE_DELTA } from '../constants/MaskData';
 import { GET_MASK_DATA } from '../querys/Corona';
-import ButtonC from '../components/common/Button';
 import Map from '../components/mask/Map';
 
 interface MaskInput {
@@ -82,6 +79,7 @@ const MaskMap = (props: LocationType) => {
   }
 
   if (props.coords) {
+    console.log(props.coords);
     const { data, loading, error } = useQuery<MaskData, MaskInput>(GET_MASK_DATA, {
       variables: {
         lat: props.coords.latitude,
@@ -99,6 +97,8 @@ const MaskMap = (props: LocationType) => {
     }
 
     if (data) {
+      console.log(data);
+      
       const { height, width } = Dimensions.get("window");
       const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
 
@@ -119,34 +119,7 @@ const MaskMap = (props: LocationType) => {
       )
     }
   }
-
-  return <Text>hi</Text>
+  return <Text>비어있습니다.</Text>
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  showOnView: {
-    position: "absolute",
-    bottom: "0%",
-    alignSelf: 'flex-end'
-  },
-  mapStyle: {
-    flex: 1,
-  },
-  callout: {
-    alignItems: 'center'
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center"
-  },
-  description: {
-    fontSize: 12,
-    textAlign: "center"
-  }
-});
 
 export default MaskMap;

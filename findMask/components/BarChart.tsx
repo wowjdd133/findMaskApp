@@ -35,6 +35,7 @@ const Chart = (props:ChartProps) => {
         showValuesOnTopOfBars={true}
         fromZero={true}
         yAxisSuffix="명"
+        yAxisLabel=""
       />
     </View>
   )

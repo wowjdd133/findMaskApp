@@ -5,12 +5,13 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { screens } from '../screens';
 import { Icons } from '../svgs';
 import { NavigationContainer } from '@react-navigation/native';
-
+// import DrawerContent from '../components/DrawerContent';
 const Navigation = () => {
   const Stack = createStackNavigator();
   // const TopTab = createMaterialTopTabNavigator();
   const Drawer = createDrawerNavigator();
   const BottomTab = createBottomTabNavigator();
+
 
   const MaskStack = () => {
     return (
@@ -39,6 +40,7 @@ const Navigation = () => {
         <Stack.Screen name="BoardList" component={screens.BoardListScreen} />
         <Stack.Screen name="WriteBoard" component={screens.WriteBoardScreen} />
         <Stack.Screen name="Board" component={screens.BoardScreen} />
+        <Stack.Screen name="EditBoard" component={screens.EditBoardScreen}/>
       </Stack.Navigator>
     )
   }
@@ -59,9 +61,13 @@ const Navigation = () => {
     return (
       <Drawer.Navigator
         drawerPosition='right'
+        // drawerContent={(props) => 
+        //   <DrawerContent 
+        //     {...props}
+        //   />}
       >
-        <Drawer.Screen name="Login" component={LoginStack} />
         <Drawer.Screen name="Board" component={BoardStack} />
+        <Drawer.Screen name="Login" component={LoginStack} />
       </Drawer.Navigator>
     )
   }

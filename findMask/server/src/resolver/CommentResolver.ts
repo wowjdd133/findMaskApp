@@ -71,7 +71,7 @@ export class CommentResolver {
 
       return true;
     }catch(err){
-      console.error(err);
+      throw new ApolloError(err);
       return false;
     }
   }

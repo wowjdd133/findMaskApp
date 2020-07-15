@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, FlatList } from 'react-native';
+import { View, Text } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native'
 import { getDistanceFromLatLon, getElaspedTime } from '../utils/MaskUtil';
-import SearchBar from '../components/SearchBar';
-import SearchItem from '../components/SearchItem';
 import { MaskData } from './MaskMap';
 import Loading from '../components/Loading';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import StoreList from '../components/mask/StoreList';
 
 export interface StoreListProps {
@@ -105,7 +102,7 @@ const StoreListContainer = () => {
       renderSeparator={renderSeparator}
       searchFilter={searchFilter}
       value={value}
-    />: <Loading />
+    />: <Text>데이터가 없습니다!</Text>
 }
 
 export default StoreListContainer;

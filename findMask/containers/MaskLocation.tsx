@@ -16,8 +16,8 @@ const MaskLocation = () => {
 
   const [location, setLocation] = useState<LocationType>({
     coords: {
-      latitude: 35.9349066,
-      longitude: 128.5471027,
+      latitude: 35.6632261,
+      longitude: 128.4135929,
     }
   });
   const [loading, setLoading] = useState<Boolean>(true);
@@ -53,13 +53,6 @@ const MaskLocation = () => {
         {
           text: "아니오",
           onPress: () => {
-            console.log('return');
-            setLocation({
-              coords: {
-                latitude: 35.9349066,
-                longitude: 128.5471027,
-              }
-            })
             setLoading(false);
           }
         }

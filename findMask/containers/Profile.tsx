@@ -1,14 +1,12 @@
 import * as React from 'react';
-import CardC from '../components/common/Card';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, Image, GestureResponderEvent } from 'react-native';
+import { GestureResponderEvent, Alert,Text } from 'react-native';
 import { GET_USER } from '../querys/User';
 import TextC from '../components/common/Text';
 import { useQuery } from '@apollo/react-hooks';
 import Loading from '../components/Loading';
-import ButtonC from '../components/common/Button';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Profile from '../components/Profile/Profile';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface userData {
   user: {
@@ -53,20 +51,26 @@ const ProfileContainer = () => {
     });
   }
 
-  if (networkStatus === 4) {
+  console.log(data);
+
+  if(networkStatus === 4) {
     return <Loading />
   }
 
-  if (loading) {
+  if(loading) {
     return <Loading />
   }
 
-  if (error) {
-    console.warn(error);
-    return <TextC fontSize={16}>에러가 났어요</TextC>
+  if(error) {
+    Alert.alert("로그인을 해주세요")
+    return (
+      <SafeAreaView style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+        <Text>로그인을 해주세요.</Text>
+      </SafeAreaView>
+    )
   }
 
-  if (data) {
+  if(data && data.user) {
     return (
       <Profile
         handleOnPress={handleOnPress}
@@ -75,8 +79,12 @@ const ProfileContainer = () => {
     )
   }
 
+  Alert.alert("로그인을 다시해주세요.")
+
   return (
-    <TextC fontSize={16}>널 처리</TextC>
+    <SafeAreaView style={{flex:1, justifyContent:'center'}}>
+      <Text>유저를 찾을 수 없습니다!</Text>
+    </SafeAreaView>
   )
 }
 

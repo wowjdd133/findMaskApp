@@ -52,10 +52,12 @@ interface MarkerListProps {
 
 const MarkerList = ({ stores, color, stat }: MarkerListProps) => {
   return (
-    <CardC>
+    <>
       {stores.map((item) => {
         const pinColor = color[item.remain_stat];
         const storeStat = stat[item.remain_stat];
+
+        console.log(item.lat, item.lng);
 
         return (
           <Marker
@@ -84,7 +86,7 @@ const MarkerList = ({ stores, color, stat }: MarkerListProps) => {
         )
       })
       }
-    </CardC>
+    </>
   )
 };
 
