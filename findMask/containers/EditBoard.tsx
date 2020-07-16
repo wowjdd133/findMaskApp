@@ -26,6 +26,7 @@ const EditBoardContainer = () => {
   const route = useRoute<EditProfileRouteProps>();
   const navigation = useNavigation();
   const [title, setTitle] = React.useState('');
+  const [disabled, setDisabled] = React.useState(false);
   const [content, setContent] = React.useState('');
   const [updateBoard] = useMutation(UPDATE_BOARD,{
     refetchQueries: [{
@@ -49,6 +50,8 @@ const EditBoardContainer = () => {
   },[]);
 
   const handleModify = async () => {
+    setDisabled(true);
+    console.log('hi');
     try{
       await updateBoard({
         variables:{
@@ -61,6 +64,8 @@ const EditBoardContainer = () => {
       navigation.goBack();
     }catch(err){
       Alert.alert("실패","아아")
+    }finally{
+      setDisabled(false);
     }
   }
 
@@ -71,6 +76,7 @@ const EditBoardContainer = () => {
       setTitle={setTitle}
       setContent={setContent}
       handleModify={handleModify}
+      disabled={disabled}
     />
   )
 }

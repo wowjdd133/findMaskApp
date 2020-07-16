@@ -14,6 +14,7 @@ interface CommentProps {
   handleRemoveComment: (e:GestureResponderEvent, id:string) => Promise<void>;
   comments: CommentInterface[] | undefined;
   getElaspedTime: (time: Date| string) => string;
+  disabled: boolean;
 }
 
 const Comment = (props:CommentProps) => {
@@ -24,7 +25,8 @@ const Comment = (props:CommentProps) => {
     handleWriteComment,
     setComment,
     getElaspedTime,
-    handleRemoveComment
+    handleRemoveComment,
+    disabled
   } = props;
 
   return (
@@ -49,6 +51,7 @@ const Comment = (props:CommentProps) => {
           width="20%"
           onPress={handleWriteComment}
           title="댓글 등록"
+          disabled={disabled}
         />
       </CardC>
       <CommentList

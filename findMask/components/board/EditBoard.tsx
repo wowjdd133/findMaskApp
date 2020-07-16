@@ -11,6 +11,7 @@ interface EditBoardProps {
   setTitle: any;
   setContent: any;
   handleModify: () => Promise<void>;
+  disabled: boolean;
 }
 
 const EditBoard = (props:EditBoardProps) => {
@@ -21,7 +22,9 @@ const EditBoard = (props:EditBoardProps) => {
           <Button 
             mode="outlined" 
             style={{marginTop:15, marginRight:25}}
-            onPress={props.handleModify}>
+            onPress={props.handleModify}
+            disabled={props.disabled}
+            >
             수정 완료
           </Button>
         </CardC>

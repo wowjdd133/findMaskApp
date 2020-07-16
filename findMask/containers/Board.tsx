@@ -76,6 +76,7 @@ const BoardContainer = () => {
 
   const route = useRoute<BoardRouteProps>();
   const navigation = useNavigation();
+  const [disabled, setDisabled] = React.useState(false);
 
   const [upViewCount, { data: ViewCountData }] = useMutation(UP_VIEWCOUNT);
 
@@ -152,6 +153,7 @@ const BoardContainer = () => {
   const handleWriteComment = async (e: GestureResponderEvent): Promise<void> => {
     console.warn(route.params.id);
     e.preventDefault();
+    setDisabled(true);
     try {
       const boardId = await writeComment({
         variables: {
@@ -167,6 +169,8 @@ const BoardContainer = () => {
     } catch (err) {
       Alert.alert("댓글쓰기 실패", err.message)
       console.log(err);
+    } finally{
+      setDisabled(false);
     }
   }
 
@@ -179,6 +183,7 @@ const BoardContainer = () => {
   const handleDeleteBoard = async (id: string): Promise<void> => {
     if(isLogin()){
       try {
+        setDisabled(true);
         await deleteBoard({
           variables: {
             id: id
@@ -187,6 +192,8 @@ const BoardContainer = () => {
         Alert.alert("성공")
       } catch{
         Alert.alert("실패", "다시 시도해주세요");
+      } finally{
+        setDisabled(false);
       }
   
       navigation.goBack();
@@ -197,6 +204,7 @@ const BoardContainer = () => {
 
   const handleEditBoard = (e: GestureResponderEvent) => {
     e.preventDefault();
+    setDisabled(true);
     if(isLogin()){
       navigation.navigate("EditBoard", {
         board: {
@@ -209,6 +217,7 @@ const BoardContainer = () => {
     } else {
       Alert.alert("실패","로그인해주세요");
     }
+    setDisabled(false);
     
   }
 
@@ -254,6 +263,7 @@ const BoardContainer = () => {
         handleEditBoard={handleEditBoard}
         handleDeleteBoard={handleDeleteBoard}
         onEndReached={handleEndReached}
+        disabled={disabled}
       />
     )
   }

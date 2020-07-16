@@ -73,7 +73,7 @@ interface BoardProps {
   onEndReached?: (info: {
     distanceFromEnd: number;
   }) => void | null | undefined;
-  refreshing?: boolean;
+  disabled: boolean;
 }
 
 const Board = (props: BoardProps) => {
@@ -91,7 +91,7 @@ const Board = (props: BoardProps) => {
     handleEditBoard,
     handleDeleteBoard,
     onEndReached,
-    refreshing
+    disabled,
   } = props;
 
   return (
@@ -142,12 +142,14 @@ const Board = (props: BoardProps) => {
                         color="#FFFFFF"
                         onPress={handleEditBoard}
                         title="수정하기"
+                        disabled={disabled}
                       />
                       <ButtonC
                         backgroundColor="#000000"
                         color="#FFFFFF"
                         onPress={() => handleDeleteBoard(board.id)}
                         title="삭제하기"
+                        disabled={disabled}
                       />
                     </CardC>
 
@@ -174,13 +176,13 @@ const Board = (props: BoardProps) => {
                     handleRemoveComment={handleRemoveComment}
                     handleWriteComment={handleWriteComment}
                     setComment={setComment}
+                    disabled={disabled}
                   />
                 </>}
               boards={boards}
               getElaspedTime={getElaspedTime}
               handleNavigateBoard={handleNavigateBoard}
               onEndReached={onEndReached}
-              refreshing={refreshing}
             />
           )
       }

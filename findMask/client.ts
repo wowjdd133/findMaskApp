@@ -8,7 +8,7 @@ import { setContext } from 'apollo-link-context';
 import { AsyncStorage } from 'react-native';
 
 const API = new HttpLink({
-  uri: 'http://6fb6f454bcfe.ngrok.io/graphql',
+  uri: 'http://78ea24798543.ngrok.io/graphql',
   credentials: 'include'
 });
 
